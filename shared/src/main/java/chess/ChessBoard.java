@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -20,7 +23,10 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        square[position.getRow()][position.getColumn()] = piece; //grabs position and assigns to piece
+//        square[position.getRow()][position.getColumn()] = piece; //grabs position and assigns to piece
+        int row = position.getRow() - 1;
+        int col = position.getColumn() - 1;
+        square[row][col] = piece;
     }
 
     /**
@@ -31,7 +37,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return square[position.getRow()][position.getColumn()];
+//        return square[position.getRow()][position.getColumn()];
+        int row = position.getRow() - 1;
+        int col = position.getColumn() - 1;
+        return square[row][col];
     }
 
     /**
@@ -71,6 +80,45 @@ public class ChessBoard {
         for (int col = 0; col < 8; col++) {
             square[6][col] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ChessBoard other = (ChessBoard) obj;
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece thisPiece = this.square[row][col];
+                ChessPiece otherPiece = other.square[row][col];
+                if (!Objects.equals(thisPiece, otherPiece)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(square);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 7; row >= 0; row--) { // Print from top to bottom
+            for (int col = 0; col < 8; col++) {
+                ChessPiece piece = square[row][col];
+                if (piece == null) {
+                    sb.append("| ");
+                } else {
+                    sb.append("|").append(piece.getPieceType().name().charAt(0)).append(" ");
+                }
+            }
+            sb.append("|\n");
+        }
+        return sb.toString();
     }
 
 }
