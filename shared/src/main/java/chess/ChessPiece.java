@@ -14,8 +14,8 @@ public class ChessPiece {
     private ChessGame.TeamColor pieceColor;
     private PieceType pieceType;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        this.pieceColor = pieceColor; //sets color
-        this.pieceType = type; //sets type
+        this.pieceColor = pieceColor; //sets color based on passed in color
+        this.pieceType = type; //sets type based on passed in type
     }
 
     /**
