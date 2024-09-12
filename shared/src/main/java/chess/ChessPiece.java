@@ -53,8 +53,83 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>(); //says no moves on the board for piece
+        Collection<ChessMove> moves = new ArrayList<>();
+        //get the position of piece
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        //setup functions for each pieces move
+        switch (pieceType) {
+            case KING:
+                addKingMoves(board, row, col, moves);
+                break;
+            case BISHOP:
+                addBishopMoves(board, row, col, moves);
+                break;
+
+        }
+
+        return moves;
     }
+    // Checks if a position is in the chess board
+    private boolean isValidPosition(int row, int col) {
+        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
+    }
+    // Checks if the position is empty or an enemy
+    private boolean isEmptyOrEnemy(ChessBoard board, int row, int col) {
+        ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+        return piece == null || piece.getTeamColor() != this.pieceColor;
+    }
+
+    // Checks if the position is occupied by an opponent's piece
+    private boolean isOpponent(ChessBoard board, int row, int col) {
+        ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+        return piece != null && piece.getTeamColor() != this.pieceColor;
+    }
+
+
+    private void addKingMoves(ChessBoard board, int row, int col, Collection<ChessMove> moves) {
+        int[] directions = {-1, 0, 1}; // King can move in any direction by 1 square
+        for (int dr : directions) {
+            for (int dc : directions) {
+                if (dr == 0 && dc == 0) continue; // Skip the current position
+                int newRow = row + dr;
+                int newCol = col + dc;
+                if (isValidPosition(newRow, newCol) && isEmptyOrEnemy(board, newRow, newCol)) {
+                    moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null)); //move from current to new row and column
+                }
+            }
+        }
+    }
+
+
+    private void addBishopMoves(ChessBoard board, int row, int col, Collection<ChessMove> moves) {
+        int[] directions = {-1, 1}; // Bishop moves diagonally
+        for (int dr : directions) {
+            for (int dc : directions) {
+                for (int step = 1; ; step++) {
+                    int newRow = row + dr * step;
+                    int newCol = col + dc * step;
+                    if (!isValidPosition(newRow, newCol)) break;
+                    if (isEmptyOrEnemy(board, newRow, newCol)) {
+                        moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
+                        if (board.getPiece(new ChessPosition(newRow, newCol)) != null) break; // Stop if there's a piece in the way
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
