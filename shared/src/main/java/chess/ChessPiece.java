@@ -63,10 +63,21 @@ public class ChessPiece {
             case KING:
                 addKingMoves(board, row, col, moves);
                 break;
+            case QUEEN:
+                addQueenMoves(board, row, col, moves);
+                break;
             case BISHOP:
                 addBishopMoves(board, row, col, moves);
                 break;
-
+            case KNIGHT:
+                addKnightMoves(board, row, col, moves);
+                break;
+            case ROOK:
+                addRookMoves(board, row, col, moves);
+                break;
+            case PAWN:
+                addPawnMoves(board, row, col, moves);
+                break;
         }
 
         return moves;
@@ -102,6 +113,10 @@ public class ChessPiece {
         }
     }
 
+    private void addQueenMoves(ChessBoard board, int row, int col, Collection<ChessMove> moves) {
+        addRookMoves(board, row, col, moves);
+        addBishopMoves(board, row, col, moves);
+    }
 
     private void addBishopMoves(ChessBoard board, int row, int col, Collection<ChessMove> moves) {
         int[] directions = {-1, 1}; // Bishop moves diagonally
@@ -122,11 +137,77 @@ public class ChessPiece {
         }
     }
 
+    private void addKnightMoves(ChessBoard board, int row, int col, Collection<ChessMove> moves) {
+        int[] rowMoves = {-2, -1, 1, 2}; // L-shaped moves
+        int[] colMoves = {-2, -1, 1, 2};
+        for (int dr : rowMoves) {
+            for (int dc : colMoves) {
+                if (Math.abs(dr) != Math.abs(dc)) { //makes sure dr and dc aren't equal or it would be a diagonal move
+                    int newRow = row + dr;
+                    int newCol = col + dc;
+                    if (isValidPosition(newRow, newCol) && isEmptyOrEnemy(board, newRow, newCol)) {
+                        moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
+                    }
+                }
+            }
+        }
+    }
 
+    private void addRookMoves(ChessBoard board, int row, int col, Collection<ChessMove> moves) {
+        int[] directions = {-1, 1}; // Rook moves vertically and horizontally
+        for (int dr : directions) {
+            for (int step = 1; ; step++) {
+                int newRow = row + dr * step;
+                int newCol = col;
+                if (!isValidPosition(newRow, newCol)) break;
+                if (isEmptyOrEnemy(board, newRow, newCol)) {
+                    moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
+                    if (board.getPiece(new ChessPosition(newRow, newCol)) != null) break;
+                } else {
+                    break;
+                }
+            }
+        }
+        for (int dc : directions) {
+            for (int step = 1; ; step++) {
+                int newRow = row;
+                int newCol = col + dc * step;
+                if (!isValidPosition(newRow, newCol)) break;
+                if (isEmptyOrEnemy(board, newRow, newCol)) {
+                    moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
+                    if (board.getPiece(new ChessPosition(newRow, newCol)) != null) break;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
 
+    private void addPawnMoves(ChessBoard board, int row, int col, Collection<ChessMove> moves) {
+        int direction = (pieceColor == ChessGame.TeamColor.WHITE) ? 1 : -1; // Move direction based on color
+        int newRow = row + direction;
 
+        // Move forward
+        if (isValidPosition(newRow, col) && board.getPiece(new ChessPosition(newRow, col)) == null) {
+            moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, col), null));
 
+            //double move from starting position
+            if ((pieceColor == ChessGame.TeamColor.WHITE && row == 2) || (pieceColor == ChessGame.TeamColor.BLACK && row == 7)) {
+                int doubleMoveRow = newRow + direction;
+                if (isValidPosition(doubleMoveRow, col) && board.getPiece(new ChessPosition(doubleMoveRow, col)) == null) {
+                    moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(doubleMoveRow, col), null));
+                }
+            }
+        }
 
+        // Capturing diagonally
+        for (int dc = -1; dc <= 1; dc += 2) {
+            int newCol = col + dc;
+            if (isValidPosition(newRow, newCol) && isOpponent(board, newRow, newCol)) {
+                moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
+            }
+        }
+    }
 
 
 
