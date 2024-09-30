@@ -126,15 +126,17 @@ public class ChessGame {
         return null; //this will break the game if no kings are there(aka bugged)
     }
 
-    private boolean isBeingAttack(ChessPosition kingPosition, TeamColor teamColor) {
+    private boolean isBeingAttack(ChessPosition kingPosition, TeamColor attackingTeam) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
-                if (piece != null && piece.getTeamColor() != teamColor) {
+                if (piece != null && piece.getTeamColor() == attackingTeam) {
                     Collection<ChessMove> moves = piece.pieceMoves(board, pos);
-                    if (moves.contains(new ChessMove(pos, kingPosition, null))) {
-                        return true;
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
                     }
                 }
             }
