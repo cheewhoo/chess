@@ -91,15 +91,6 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-//    public void makeMove(ChessMove move) throws InvalidMoveException {
-//        if (!validMoves(move.getStartPosition()).contains(move)){
-//            throw new InvalidMoveException("Can't make that move");
-//        }
-//        ChessPiece piece = board.getPiece(move.getStartPosition());
-//        board.addPiece(move.getStartPosition(), null);
-//        board.addPiece(move.getEndPosition(), piece);
-//        setTeamTurn(currentTeam == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
-//    }
     public void makeMove(ChessMove move) throws InvalidMoveException {
         if (!validMoves(move.getStartPosition()).contains(move)) {
             throw new InvalidMoveException("Can't make that move");
