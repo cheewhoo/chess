@@ -171,7 +171,6 @@ public class ChessGame {
                 ChessPiece piece = board.getPiece(position);
                 if (moves != null && !moves.isEmpty() && piece != null && piece.getTeamColor() == teamColor) {
                     for (ChessMove move : moves) {
-                        System.out.println("Valid move: " + move);
                         board.addPiece(move.getEndPosition(), piece);
                         board.addPiece(position, null);
                         if (!isInCheck(teamColor)) {
@@ -196,26 +195,33 @@ public class ChessGame {
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
      */
+
     public boolean isInStalemate(TeamColor teamColor) {
-        if (isInCheck(teamColor)) {
+        if(currentTeam != teamColor){
             return false;
         }
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition position = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(position);
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = validMoves(position);
-                    if (!moves.isEmpty()) {
+        if(hasPossibleMoves(teamColor)){
+            return false;
+        }
+        return !isInCheck(teamColor);
+    }
+    private boolean hasPossibleMoves(TeamColor teamColor){
+        for(int row = 1; row <= 8; row++){
+            for(int col = 1; col<= 8; col++){
+                ChessPosition currentSpot = new ChessPosition(row,col);
+                ChessPiece piece = board.getPiece(currentSpot);
+                if(piece == null) continue;
+                if(piece.getTeamColor() == teamColor){
+                    Set<ChessMove> validMoves = new HashSet<>(piece.pieceMoves(board, currentSpot));
+                    if(!validMoves.isEmpty()){
                         return false;
                     }
                 }
+
             }
         }
         return true;
     }
-
-
 
     /**
      * Sets this game's chessboard with a given board
