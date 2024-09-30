@@ -65,14 +65,13 @@ public class ChessGame {
         Collection<ChessMove> validMoves = new ArrayList<>();
 
         for (ChessMove move : moves) {
-            if (!wouldLeaveKingInCheck(move)) {
+            if (!wouldPutInCheck(move)) {
                 validMoves.add(move);
             }
         }
         return validMoves;
     }
-
-    private boolean wouldLeaveKingInCheck(ChessMove move) {
+    private boolean wouldPutInCheck(ChessMove move) {
         ChessPosition originalPosition = move.getStartPosition();
         ChessPosition targetPosition = move.getEndPosition();
         ChessPiece piece = board.getPiece(originalPosition);
