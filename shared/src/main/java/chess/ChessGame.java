@@ -17,6 +17,7 @@ public class ChessGame {
     public ChessGame() {
         this.currentTeam = TeamColor.WHITE;
         this.board = new ChessBoard();
+        board.resetBoard();
 
     }
 
@@ -110,7 +111,6 @@ public class ChessGame {
         setTeamTurn(currentTeam == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
     }
 
-
     /**
      * Determines if the given team is in check
      *
@@ -186,7 +186,6 @@ public class ChessGame {
         }
         return true;
     }
-
 
     /**
      * Determines if the given team is in stalemate, which here is defined as having

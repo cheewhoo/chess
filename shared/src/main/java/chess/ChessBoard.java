@@ -12,8 +12,6 @@ import java.util.Objects;
 public class ChessBoard {
     private ChessPiece[][] square = new ChessPiece[8][8]; //allocate structure for board
     public ChessBoard() {
-
-        
     }
 
 
