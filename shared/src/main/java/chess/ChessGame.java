@@ -2,7 +2,10 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.stream.Collectors;
+
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -54,11 +57,34 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        if(piece == null|| piece.getTeamColor() != currentTeam) {
-            return null;
+        if (piece == null || piece.getTeamColor() != currentTeam) {
+            return Collections.emptyList();
         }
-        return piece.pieceMoves(board, startPosition);
+
+        Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        for (ChessMove move : moves) {
+            if (!wouldLeaveKingInCheck(move)) {
+                validMoves.add(move);
+            }
+        }
+        return validMoves;
     }
+
+    private boolean wouldLeaveKingInCheck(ChessMove move) {
+        ChessPosition originalPosition = move.getStartPosition();
+        ChessPosition targetPosition = move.getEndPosition();
+        ChessPiece piece = board.getPiece(originalPosition);
+
+        board.addPiece(targetPosition, piece);
+        board.addPiece(originalPosition, null);
+        boolean inCheck = isInCheck(currentTeam);
+        board.addPiece(originalPosition, piece);
+        board.addPiece(targetPosition, null);
+        return inCheck;
+    }
+
 
     /**
      * Makes a move in a chess game
