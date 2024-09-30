@@ -92,15 +92,31 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
+//    public void makeMove(ChessMove move) throws InvalidMoveException {
+//        if (!validMoves(move.getStartPosition()).contains(move)){
+//            throw new InvalidMoveException("Can't make that move");
+//        }
+//        ChessPiece piece = board.getPiece(move.getStartPosition());
+//        board.addPiece(move.getStartPosition(), null);
+//        board.addPiece(move.getEndPosition(), piece);
+//        setTeamTurn(currentTeam == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
+//    }
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (!validMoves(move.getStartPosition()).contains(move)){
+        if (!validMoves(move.getStartPosition()).contains(move)) {
             throw new InvalidMoveException("Can't make that move");
         }
         ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if ((piece.getTeamColor() == ChessGame.TeamColor.WHITE && move.getEndPosition().getRow() == 8) ||
+                    (piece.getTeamColor() == ChessGame.TeamColor.BLACK && move.getEndPosition().getRow() == 1)) {
+                piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+            }
+        }
         board.addPiece(move.getStartPosition(), null);
         board.addPiece(move.getEndPosition(), piece);
         setTeamTurn(currentTeam == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
     }
+
 
     /**
      * Determines if the given team is in check
