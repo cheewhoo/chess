@@ -135,12 +135,12 @@ public class ChessGame {
         return null; //this will break the game if no kings are there(aka bugged)
     }
 
-    private boolean isBeingAttack(ChessPosition kingPosition, TeamColor attackingTeam) {
+    private boolean isBeingAttack(ChessPosition kingPosition, TeamColor attacker) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
-                if (piece != null && piece.getTeamColor() == attackingTeam) {
+                if (piece != null && piece.getTeamColor() == attacker) {
                     Collection<ChessMove> moves = piece.pieceMoves(board, pos);
                     for (ChessMove move : moves) {
                         if (move.getEndPosition().equals(kingPosition)) {
@@ -196,29 +196,21 @@ public class ChessGame {
      */
 
     public boolean isInStalemate(TeamColor teamColor) {
-        if(currentTeam != teamColor){
+        if(isInCheck(teamColor)) {
             return false;
         }
-        if(hasPossibleMoves(teamColor)){
-            return false;
-        }
-        return !isInCheck(teamColor);
-    }
-    private boolean hasPossibleMoves(TeamColor teamColor){
-        for(int row = 1; row <= 8; row++){
-            for(int col = 1; col<= 8; col++){
-                ChessPosition currentSpot = new ChessPosition(row,col);
-                ChessPiece piece = board.getPiece(currentSpot);
-                if(piece == null) continue;
-                if(piece.getTeamColor() == teamColor){
-                    Set<ChessMove> validMoves = new HashSet<>(piece.pieceMoves(board, currentSpot));
-                    if(!validMoves.isEmpty()){
+        for(int row = 1; row <= 8; row++) {
+            for(int col = 1; col <= 8; col++) {
+                ChessPosition currentSpot = new ChessPosition(row, col);
+                if(board.getPiece(currentSpot) != null && board.getPiece(currentSpot).getTeamColor() == teamColor) {
+                    HashSet<ChessMove> currentMoves = new HashSet<>(validMoves(currentSpot));
+                    if(!currentMoves.isEmpty()) {
                         return false;
                     }
                 }
-
             }
         }
+
         return true;
     }
 
