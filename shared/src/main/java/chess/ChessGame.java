@@ -76,8 +76,6 @@ public class ChessGame {
         });
     }
 
-
-
     /**
      * Makes a move in a chess game
      *
@@ -89,27 +87,28 @@ public class ChessGame {
         if (piece == null) {
             throw new InvalidMoveException("No piece at the starting position");
         }
-        Collection<ChessMove> otherMoves = validMoves(move.getStartPosition());
-        if (!otherMoves.contains(move)) {
+        if (piece.getTeamColor() != currentTeam) {
+            throw new InvalidMoveException("That's an enemy");
+        }
+        Set<ChessMove> validMoves = new HashSet<>(validMoves(move.getStartPosition()));
+        if (validMoves.contains(move)) {
+            ChessPiece target = board.getPiece(move.getEndPosition());
+            if (target != null && target.getTeamColor() != piece.getTeamColor()) {
+                board.addPiece(move.getEndPosition(), null);
+            }
+            ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+            if (promotionPiece == null) {
+                board.addPiece(move.getEndPosition(), piece);
+            } else {
+                board.addPiece(move.getEndPosition(), new ChessPiece(currentTeam, promotionPiece));
+            }
+            board.addPiece(move.getStartPosition(), null);
+            currentTeam = currentTeam == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+        } else {
             throw new InvalidMoveException("Bad Move");
         }
-        ChessPiece targetspot = board.getPiece(move.getEndPosition());
-        if (targetspot != null && targetspot.getTeamColor() == piece.getTeamColor()) {
-            throw new InvalidMoveException("Can't move to position with your piece already in it");
-        }
-        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            if ((piece.getTeamColor() == TeamColor.WHITE && move.getEndPosition().getRow() == 8) ||
-                    (piece.getTeamColor() == TeamColor.BLACK && move.getEndPosition().getRow() == 1)) {
-                if (move.getPromotionPiece() == null) {
-                    throw new InvalidMoveException("choose promotion");
-                }
-                piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
-            }
-        }
-        board.addPiece(move.getEndPosition(), piece);
-        board.addPiece(move.getStartPosition(), null);
-        setTeamTurn(currentTeam == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
     }
+
 
     /**
      * Determines if the given team is in check
