@@ -11,12 +11,12 @@ public class Server {
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
         Spark.delete("/db", this::clear);
-        Spark.post("/user", userHandler::register);
-        Spark.post("/session", userHandler::login);
-        Spark.delete("/session", userHandler::logout);
+        Spark.post("/user", userHandler::registerUser);
+        Spark.post("/session", userHandler::loginUser);
+        Spark.delete("/session", userHandler::logoutUser);
         Spark.get("/game", gameHandler::Games_lst);
         Spark.post("/game", gameHandler::makeGame);
-        Spark.put("/game", gameHandler::joinGame);
+        Spark.put("/game", gameHandler::joinExisitngGame);
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -46,8 +46,8 @@ public class Server {
 
     private Object clear(Request req, Response resp) {
         try {
-            userService.clear();
-            gameService.clear();
+            userService.clearUsers();
+            gameService.clearGames();
             resp.status(200);
             return "{}";
         }

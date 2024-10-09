@@ -8,33 +8,32 @@ import service.Service_User;
 import spark.Request;
 import spark.Response;
 public class HandleUser {
-    Service_User userService;
+    private final Service_User userService;
     public HandleUser(Service_User userService) {
         this.userService = userService;
     }
-    public Object register(Request req, Response resp) {
+    public Object registerUser(Request req, Response resp) {
         try {
             Data_User userData = new Gson().fromJson(req.body(), Data_User.class);
             Data_Auth authData = userService.makeUser(userData);
             if (authData == null) {
                 resp.status(400);
-                return "{ \"message\": \"Error: bad request\" }";
-            } else {
-                resp.status(200);
-                return new Gson().toJson(authData);
+                return "{ \"error\": \"Invalid request.\" }";
             }
+            resp.status(200);
+            return new Gson().toJson(authData);
         } catch (DataAccessException e) {
             resp.status(403);
-            return "{ \"message\": \"Error: already taken\" }";
+            return "{ \"error\": \"Username already exists.\" }";
         } catch (JsonSyntaxException e) {
             resp.status(400);
-            return "{ \"message\": \"Error: bad request\" }";
+            return "{ \"error\": \"Invalid request body.\" }";
         } catch (Exception e) {
             resp.status(500);
-            return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
+            return "{ \"error\": \"" + e.getMessage() + "\" }";
         }
     }
-    public Object login(Request req, Response resp) {
+    public Object loginUser(Request req, Response resp) {
         try {
             Data_User userData = new Gson().fromJson(req.body(), Data_User.class);
             Data_Auth authData = userService.loginUser(userData);
@@ -42,13 +41,13 @@ public class HandleUser {
             return new Gson().toJson(authData);
         } catch (DataAccessException e) {
             resp.status(401);
-            return "{ \"message\": \"Error: unauthorized\" }";
+            return "{ \"error\": \"Unauthorized.\" }";
         } catch (Exception e) {
             resp.status(500);
-            return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
+            return "{ \"error\": \"" + e.getMessage() + "\" }";
         }
     }
-    public Object logout(Request req, Response resp) {
+    public Object logoutUser(Request req, Response resp) {
         try {
             String authToken = req.headers("authorization");
             userService.logoutUser(authToken);
@@ -56,10 +55,10 @@ public class HandleUser {
             return "{}";
         } catch (DataAccessException e) {
             resp.status(401);
-            return "{ \"message\": \"Error: unauthorized\" }";
+            return "{ \"error\": \"Unauthorized.\" }";
         } catch (Exception e) {
             resp.status(500);
-            return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
+            return "{ \"error\": \"" + e.getMessage() + "\" }";
         }
     }
 }

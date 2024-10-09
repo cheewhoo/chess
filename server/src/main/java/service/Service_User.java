@@ -38,7 +38,7 @@ public class Service_User {
         authDAO.getAuthentication(authToken);
         authDAO.deleteAuthentication(authToken);
     }
-    public void clear() {
+    public void clearUsers() {
         userDAO.clear();
         authDAO.clear();
     }

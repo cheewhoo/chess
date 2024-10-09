@@ -10,14 +10,14 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Service_Game {
+public class Service_Game{
     Game_DAO gameDAO;
     Auth_DAO authDAO;
     public Service_Game(Game_DAO gameDAO, Auth_DAO authDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }
-    public void clear() {
+    public void clearGames() {
         gameDAO.clear();
     }
     public HashSet<Data_Game> Games_lst(String authToken) throws DataAccessException {
@@ -26,12 +26,12 @@ public class Service_Game {
     }
     public int makeGame(String authToken) throws DataAccessException {
         authDAO.getAuthentication(authToken);
-        int gameID;
+        int newgameID;
         do {
-            gameID = ThreadLocalRandom.current().nextInt(1, 10000);
-        } while (gameDAO.gameExists(gameID));
-        gameDAO.makeGame(new Data_Game(gameID, null, null, null, null));
-        return gameID;
+            newgameID = ThreadLocalRandom.current().nextInt(1, 10000);
+        } while (gameDAO.gameExists(newgameID));
+        gameDAO.makeGame(new Data_Game(newgameID, null, null, null, null));
+        return newgameID;
     }
     public int joinGame(String authToken, int gameID, String color) throws UnauthorizedException, DataAccessException {
         Data_Game gameData;
