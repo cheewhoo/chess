@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class HandleUser {
     Service_User userService;
-    public Service_User(Service_User userService) {
+    public HandleUser(Service_User userService) {
         this.userService = userService;
     }
     public Object register(Request req, Response resp) {

@@ -1,5 +1,5 @@
 package service;
-import dataaccess.Game_DAO
+import dataaccess.Game_DAO;
 
 public class Service_Game {
     Game_DAO gameDAO;
