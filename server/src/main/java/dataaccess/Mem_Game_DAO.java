@@ -12,15 +12,8 @@ public class Mem_Game_DAO implements Game_DAO{
         db = HashSet.newHashSet(16);
     }
     @Override
-    public HashSet<Data_Game> listGames(String username) {
-        HashSet<Data_Game> games = HashSet.newHashSet(16);
-        for (Data_Game game : db) {
-            if (game.whiteUser().equals(username) ||
-                    game.blackUser().equals(username)) {
-                games.add(game);
-            }
-        }
-        return games;
+    public HashSet<Data_Game> Games_lst() {
+        return db;
     }
     @Override
     public void makeGame(int gameID, String whiteUser, String blackUser, String gameName, ChessGame game) {
@@ -43,4 +36,23 @@ public class Mem_Game_DAO implements Game_DAO{
     public void clear() {
         db = HashSet.newHashSet(16);
     }
+    @Override
+    public boolean gameExists(int gameID) {
+        for (Data_Game game : db) {
+            if (game.gameID() == gameID) {
+                return true;
+            }
+        }
+        return false;
+    }
+    @Override
+    public void updateGame(Data_Game game) {
+        try {
+            db.remove(getGame(game.gameID()));
+            db.add(game);
+        } catch (DataAccessException e) {
+            db.add(game);
+        }
+    }
+
 }

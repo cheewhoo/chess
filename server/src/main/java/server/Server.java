@@ -10,10 +10,13 @@ public class Server {
     public int run(int desiredPort) {
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
-        Spark.get("/hello", (req, res) -> "Hello, World!");
-//        Spark.init();
-        Spark.post("/user", HandleUser::register);
         Spark.delete("/db", this::clear);
+        Spark.post("/user", userHandler::register);
+        Spark.post("/session", userHandler::login);
+        Spark.delete("/session", userHandler::logout);
+        Spark.get("/game", gameHandler::Games_lst);
+        Spark.post("/game", gameHandler::makeGame);
+        Spark.put("/game", gameHandler::joinGame);
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -36,7 +39,7 @@ public class Server {
         authDAO = new Mem_Auth_DAO();
         gameDAO = new Mem_Game_DAO();
         userService = new Service_User(userDAO, authDAO);
-        gameService = new Service_Game(gameDAO);
+        gameService = new Service_Game(gameDAO, authDAO);
         userHandler = new HandleUser(userService);
         gameHandler = new HandleGame(gameService);
     }
