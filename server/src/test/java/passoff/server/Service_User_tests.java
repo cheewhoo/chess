@@ -1,78 +1,67 @@
 package passoffTests.serverTests;
 import dataAccess.*;
+import dataaccess.DataAccessException;
+import dataaccess.Mem_Auth_DAO;
+import dataaccess.Mem_User_DAO;
+import dataaccess.UnauthorizedException;
 import model.Data_Auth;
 import model.Data_User;
 import org.junit.jupiter.api.*;
 import service.Service_User;
 
-public class UserServiceTest {
-    static Service_User userService;
-    static User_DAO userDAO;
-    static Auth_DAO authDAO;
-    static User_Data defaultUser;
+public class serviceUserTest {
     @BeforeAll
-    static void init() {
-        userDAO = new Mem_User_DAO();
-        authDAO = new Mem_Auth_DAO();
-        userService = new Service_User(userDAO, authDAO);
+    void starter() {
+        serviceuser = new Service_User(new Mem_User_DAO(), new Mem_Auth_DAO());
     }
     @BeforeEach
     void setup() {
-        userDAO.clear();
-        authDAO.clear();
-        defaultUser = new Data_User("Username", "password", "email");
+        Mem_User_DAO.clear();
+        Mem_Auth_DAO.clear();
+        user = new Data_User("Username", "password");
     }
     @Test
-    @DisplayName("Create Valid User")
-    void createUserTestPositive() throws BadRequestException, DataAccessException {
-        AuthData resultAuth = userService.makeUser(defaultUser);
-        Assertions.assertEquals(authDAO.getAuthentication(resultAuth.authenticationToken()), resultAuth);
+    void makeuserworks() throws DataAccessException {
+        AuthData authenticateResult = serviceuser.makeUser(user);
+        Assertions.assertEquals(Mem_Auth_DAO.getAuthentication(authenticateResult.authenticationToken()), authenticateResult);
     }
     @Test
-    @DisplayName("Create Invalid User")
-    void createUserTestNegative() throws BadRequestException {
-        userService.makeUser(defaultUser);
-        Assertions.assertThrows(BadRequestException.class, () -> userService.makeUser(defaultUser));
+    void makeuserfails() throws UnauthorizedException {
+        serviceuser.makeUser(user);
+        Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.makeUser(user));
     }
     @Test
-    @DisplayName("Proper Login User")
-    void loginUserTestPositive() throws BadRequestException, UnauthorizedException, DataAccessException {
-        userService.makeUser(defaultUser);
-        Data_Auth authData = userService.loginUser(defaultUser);
-        Assertions.assertEquals(authDAO.getAuthentication(authData.authenticationToken()), authData);
+    void loginworks() throws UnauthorizedException, DataAccessException {
+        serviceuser.makeUser(user);
+        Data_Auth authData = serviceuser.loginUser(user);
+        Assertions.assertEquals(Mem_Auth_DAO.getAuthentication(authData.authenticationToken()), authData);
     }
     @Test
-    @DisplayName("Improper Login User")
-    void loginUserTestNegative() throws BadRequestException {
-        Assertions.assertThrows(UnauthorizedException.class, () -> userService.loginUser(defaultUser));
-        userService.makeUser(defaultUser);
-        UserData badPassUser = new Data_User(defaultUser.username(), "wrongPass", defaultUser.email());
-        Assertions.assertThrows(UnauthorizedException.class, () -> userService.loginUser(badPassUser));
+    void loginfails() throws UnauthorizedException, DataAccessException {
+        Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.loginUser(user));
+        serviceuser.makeUser(user);
+        Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.loginUser(new Data_User(user.username(), "wrongPass")));
     }
     @Test
-    @DisplayName("Proper Logout User")
-    void logoutUserTestPositive() throws BadRequestException, UnauthorizedException {
-        AuthData auth = Service_User.createUser(defaultUser);
-        userService.logoutUser(auth.authenticationToken());
-        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuthentication(auth.authenticationToken()));
+    void logoutworks() throws UnauthorizedException {
+        AuthData authenticate = Service_User.makeUser(user);
+        serviceuser.logoutUser(authenticate.authenticationToken());
+        Assertions.assertThrows(DataAccessException.class, () -> Mem_Auth_DAO.getAuthentication(authenticate.authenticationToken()));
     }
     @Test
-    @DisplayName("Improper Logout User")
-    void logoutUserTestNegative() throws BadRequestException {
-        Data_Auth auth = userService.makeUser(defaultUser);
-        Assertions.assertThrows(UnauthorizedException.class, () -> userService.logoutUser("badAuthToken"));
+    void logoutfails() throws UnauthorizedException {
+        Data_Auth auth = serviceuser.makeUser(user);
+        Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.logoutUser("failed Auth"));
     }
     @Test
-    @DisplayName("Proper Clear DB")
-    void clearTestPositive() throws BadRequestException {
-        Data_Auth auth = userService.makeUser(defaultUser);
-        userService.clear();
-        Assertions.assertThrows(DataAccessException.class, () -> userDAO.getUser(defaultUser.username()));
-        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuthentication(auth.authenticationToken()));
+    void clearworks() throws BadRequestException {
+        Data_Auth authenticate = serviceuser.makeUser(user);
+        serviceuser.clear();
+        Assertions.assertThrows(DataAccessException.class, () -> Mem_User_DAO.getUser(user.username()));
+        Assertions.assertThrows(DataAccessException.class, () -> Mem_Auth_DAO.getAuthentication(authenticate.authenticationToken()));
     }
     @Test
-    @DisplayName("Improper Clear DB")
-    void clearTestNegative() throws BadRequestException {
-        Assertions.assertDoesNotThrow(() -> userService.clear());
+    void clearfails() {
+        Assertions.assertDoesNotThrow(() -> serviceuser.clear());
     }
 }
