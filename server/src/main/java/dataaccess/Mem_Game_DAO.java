@@ -1,54 +1,51 @@
 package dataaccess;
+
 import chess.ChessGame;
 import model.Data_Game;
 import java.util.HashSet;
+import java.util.Optional;
 
+public class Mem_Game_DAO implements Game_DAO {
+    private HashSet<Data_Game> gameDatabase;
 
-
-
-public class Mem_Game_DAO implements Game_DAO{
-    HashSet<Data_Game> db;
     public Mem_Game_DAO() {
-        db = HashSet.newHashSet(16);
+        gameDatabase = new HashSet<>();
     }
+
     @Override
     public HashSet<Data_Game> Games_lst() {
-        return db;
+        return new HashSet<>(gameDatabase); // Return a copy of the game database
     }
+
     @Override
     public void makeGame(Data_Game game) {
-        db.add(game);
-    }
-    @Override
-    public Data_Game getGame(int gameID) throws DataAccessException {
-        for (Data_Game game : db) {
-            if (game.gameID() == gameID) {
-                return game;
-            }
-        }
-        throw new DataAccessException("Unknown Game: " +gameID);
-    }
-    @Override
-    public void clear() {
-        db = HashSet.newHashSet(16);
-    }
-    @Override
-    public boolean gameExists(int gameID) {
-        for (Data_Game game : db) {
-            if (game.gameID() == gameID) {
-                return true;
-            }
-        }
-        return false;
-    }
-    @Override
-    public void updateGame(Data_Game game) {
-        try {
-            db.remove(getGame(game.gameID()));
-            db.add(game);
-        } catch (DataAccessException e) {
-            db.add(game);
+        if (!gameDatabase.contains(game)) {
+            gameDatabase.add(game);
         }
     }
 
+    @Override
+    public Data_Game getGame(int gameID) throws DataAccessException {
+        Optional<Data_Game> foundGame = gameDatabase.stream()
+                .filter(game -> game.gameID() == gameID)
+                .findFirst();
+
+        return foundGame.orElseThrow(() -> new DataAccessException("Game not found: " + gameID));
+    }
+
+    @Override
+    public void clear() {
+        gameDatabase.clear();
+    }
+
+    @Override
+    public boolean gameExists(int gameID) {
+        return gameDatabase.stream().anyMatch(game -> game.gameID() == gameID);
+    }
+
+    @Override
+    public void updateGame(Data_Game game) {
+        gameDatabase.removeIf(g -> g.gameID() == game.gameID());
+        gameDatabase.add(game);
+    }
 }

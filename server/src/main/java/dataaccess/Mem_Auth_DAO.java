@@ -1,39 +1,50 @@
 package dataaccess;
+
 import model.Data_Auth;
 import java.util.HashSet;
+import java.util.Iterator;
 
+public class Mem_Auth_DAO implements Auth_DAO {
+    private HashSet<Data_Auth> authDatabase;
 
-
-public class Mem_Auth_DAO implements Auth_DAO{
-    HashSet<Data_Auth> db;
     public Mem_Auth_DAO() {
-        db = HashSet.newHashSet(16);
+        this.authDatabase = new HashSet<>();
     }
+
     @Override
     public void addAuthentication(Data_Auth authData) {
-        db.add(authData);
+        if (!authDatabase.contains(authData)) {
+            authDatabase.add(authData);
+        }
     }
+
     @Override
     public Data_Auth getAuthentication(String authToken) throws DataAccessException {
-        for (Data_Auth authData : db) {
-            if (authData.authenticationToken().equals(authToken)) {
-                return authData;
-            }
+        Data_Auth foundAuth = authDatabase.stream()
+                .filter(authData -> authData.authenticationToken().equals(authToken))
+                .findAny()
+                .orElse(null);
+
+        if (foundAuth == null) {
+            throw new DataAccessException("Authentication token not found: " + authToken);
         }
-        throw new DataAccessException("Unknown authToken: " + authToken);
+        return foundAuth;
     }
+
     @Override
     public void deleteAuthentication(String authToken) {
-        for (Data_Auth authData : db) {
+        Iterator<Data_Auth> iterator = authDatabase.iterator();
+        while (iterator.hasNext()) {
+            Data_Auth authData = iterator.next();
             if (authData.authenticationToken().equals(authToken)) {
-                db.remove(authData);
-                break;
+                iterator.remove();
+                return;
             }
         }
     }
 
     @Override
     public void clear() {
-        db = HashSet.newHashSet(16);
+        authDatabase.clear();
     }
 }
