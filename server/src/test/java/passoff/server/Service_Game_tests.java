@@ -34,7 +34,7 @@ public class serviceGametest {
     }
     @Test
     void makeGameFailed() throws UnauthorizedException {
-        Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.makeGame("invalid Token"));
+        Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.makeGame("faulty token"));
     }
     @Test
     void ListGamesWorks() throws UnauthorizedException {
@@ -49,7 +49,7 @@ public class serviceGametest {
     }
     @Test
     void listGamesfailed() {
-        Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.Games_lst("wrong Token"));
+        Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.Games_lst("wrong token"));
     }
     @Test
     void joinGameworks() throws UnauthorizedException, DataAccessException {
@@ -61,7 +61,7 @@ public class serviceGametest {
     @Test
     void joinGameTestNegative() throws UnauthorizedException {
         int gameID = servicegame.makeGame(authenticate.authenticationToken());
-        Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.joinGame("badToken", gameID, "WHITE"));
+        Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.joinGame("wrong token", gameID, "WHITE"));
        }
     @Test
     void clearDBworks() throws UnauthorizedException {
