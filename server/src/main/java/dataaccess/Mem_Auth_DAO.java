@@ -10,10 +10,6 @@ public class Mem_Auth_DAO implements Auth_DAO{
         db = HashSet.newHashSet(16);
     }
     @Override
-    public void addAuthentication(String authToken, String username) {
-        db.add(new Data_Auth(username, authToken));
-    }
-    @Override
     public void addAuthentication(Data_Auth authData) {
         db.add(authData);
     }
@@ -24,7 +20,7 @@ public class Mem_Auth_DAO implements Auth_DAO{
                 return authData;
             }
         }
-        throw new DataAccessException("Unknown auth: " + authToken);
+        throw new DataAccessException("Unknown authToken: " + authToken);
     }
     @Override
     public void deleteAuthentication(String authToken) {

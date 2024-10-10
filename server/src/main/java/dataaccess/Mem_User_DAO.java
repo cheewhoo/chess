@@ -19,17 +19,6 @@ public class Mem_User_DAO implements User_DAO{
         throw new DataAccessException("Unknown User: " + username);
     }
 
-    @Override
-    public void makeUser(String username, String password, String email) throws DataAccessException {
-        try {
-            getUser(username);
-        }
-        catch (DataAccessException e) {
-            db.add(new Data_User(username, password, email));
-            return;
-        }
-        throw new DataAccessException("User already exists: " + username);
-    }
 
     @Override
     public void makeUser(Data_User user) throws DataAccessException {

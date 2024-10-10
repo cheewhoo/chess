@@ -16,10 +16,6 @@ public class Mem_Game_DAO implements Game_DAO{
         return db;
     }
     @Override
-    public void makeGame(int gameID, String whiteUser, String blackUser, String gameName, ChessGame game) {
-        db.add(new Data_Game(gameID, whiteUser, blackUser, gameName, game));
-    }
-    @Override
     public void makeGame(Data_Game game) {
         db.add(game);
     }
