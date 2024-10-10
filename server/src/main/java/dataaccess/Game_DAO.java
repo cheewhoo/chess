@@ -1,6 +1,5 @@
 package dataaccess;
 import model.Data_Game;
-import chess.ChessGame;
 import java.util.HashSet;
 
 public interface Game_DAO {
