@@ -33,27 +33,41 @@ public class serviceGametest {
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.makeGame("faulty token"));
     }
     @Test
-    void ListGamesWorks() throws UnauthorizedException {
-        int firstgame = servicegame.makeGame(authenticate.authenticationToken());
-        int secondgame = servicegame.makeGame(authenticate.authenticationToken());
-        int thirdgame = servicegame.makeGame(authenticate.authenticationToken());
-        HashSet<Data_Game> expectedGamelst = new LinkedHashSet<>();
-        expectedGameslst.add(new Data_Game(firstgame, null, null, null, null));
-        expectedGameslst.add(new Data_Game(secondgame, null, null, null, null));
-        expectedGameslst.add(new Data_Game(thirdgame, null, null, null, null));
-        Assertions.assertEquals(expectedGameslst, servicegame.Games_lst(authenticate.authenticationToken()));
+    public void listGamesworks() throws UnauthorizedException {
+        String authToken = authenticate.authenticationToken();
+        int firstGame = servicegame.makeGame(authToken);
+        int secondGame = servicegame.makeGame(authToken);
+        HashSet<Data_Game> expectedGameList = new LinkedHashSet<>();
+        expectedGameList.add(new Data_Game(firstGame, null, null, null, null));
+        expectedGameList.add(new Data_Game(secondGame, null, null, null, null));
+        HashSet<Data_Game> actualGameList = null;
+        try {
+            actualGameList = servicegame.Games_lst(authToken);
+        } catch (UnauthorizedException e) {
+            Assertions.fail("Exception thrown: " + e.getMessage());
+        }
+        Assertions.assertEquals(expectedGameList, actualGameList);
     }
+
     @Test
     void listGamesfailed() {
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.Games_lst("wrong token"));
     }
     @Test
-    void joinGameworks() throws UnauthorizedException, DataAccessException {
-        int gameID = servicegame.makeGame(authenticate.authenticationToken());
-        servicegame.joinGame(authenticate.authenticationToken(), gameID, "WHITE");
-        Data_Game expectedGame = new Data_Game(gameID, authenticate.username(), null, null, null);
-        Assertions.assertEquals(expectedGame, memgameDAO.getGame(gameID));
+    public void JoinGameWorks() throws UnauthorizedException, DataAccessException {
+        String authToken = authenticate.authenticationToken();
+        String username = authenticate.username();
+        int gameID = servicegame.makeGame(authToken);
+        try {
+            servicegame.joinGame(authToken, gameID, "WHITE");
+        } catch (UnauthorizedException | DataAccessException e) {
+            Assertions.fail("Exception thrown: " + e.getMessage());
+        }
+        Data_Game expectedGame = new Data_Game(gameID, username, null, null, null);
+        Data_Game actualGame = Mem_Game_DAO.getGame(gameID);
+        Assertions.assertEquals(expectedGame, actualGame);
     }
+
     @Test
     void joinGameTestNegative() throws UnauthorizedException {
         int gameID = servicegame.makeGame(authenticate.authenticationToken());
