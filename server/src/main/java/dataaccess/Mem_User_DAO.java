@@ -37,7 +37,7 @@ public class Mem_User_DAO implements User_DAO {
             if (user.get().password().equals(password)) {
                 return true;
             }
-            return false; // Password mismatch
+            return false;
         } else {
             throw new DataAccessException("Unknown User: " + username);
         }

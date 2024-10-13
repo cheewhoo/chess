@@ -1,6 +1,5 @@
 package dataaccess;
 
-import chess.ChessGame;
 import model.Data_Game;
 import java.util.HashSet;
 import java.util.Optional;
