@@ -34,10 +34,7 @@ public class Mem_User_DAO implements User_DAO {
                 .findFirst();
 
         if (user.isPresent()) {
-            if (user.get().password().equals(password)) {
-                return true;
-            }
-            return false;
+            return user.get().password().equals(password);
         } else {
             throw new DataAccessException("Unknown User: " + username);
         }
