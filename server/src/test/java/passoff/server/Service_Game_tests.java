@@ -10,42 +10,45 @@ import java.util.LinkedHashSet;
 
 public class serviceGametest {
 
+    private Service_Game servicegame;
+    private Mem_Game_DAO memgame;
+    private Mem_Auth_DAO memauth;
+    private Data_Auth authenticate;
+
     @BeforeAll
     void setup() {
-        servicegame = new Service_Game(Mem_Game_DAO, Mem_Auth_DAO);
+        memgame = new Mem_Game_DAO();
+        memauth = new Mem_Auth_DAO();
+        servicegame = new Service_Game(memgame, memauth);
+
         authenticate = new Data_Auth("Username", "authToken");
-        Mem_Auth_DAO.addAuthentication(authData);
+        memauth.addAuthentication(authenticate);
     }
     @BeforeEach
-    void setup() {
-        Mem_Game_DAO.clear();
+    void reset() {
+        memgame.clear();
     }
 
     @Test
-    void makeGameworks() throws UnauthorizedException {
+    void makeGameworks(){
         int firstID = servicegame.makeGame(authenticate.authenticationToken());
-        Assertions.assertTrue(Mem_Game_DAO.gameExists(firstID));
+        Assertions.assertTrue(memgame.gameExists(firstID));
         int secondID = servicegame.makeGame(authenticate.authenticationToken());
         Assertions.assertNotEquals(firstID, secondID);
     }
     @Test
-    void makeGameFailed() throws UnauthorizedException {
+    void makeGameFailed() {
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.makeGame("faulty token"));
     }
     @Test
-    public void listGamesworks() throws UnauthorizedException {
+    public void listGamesworks(){
         String authToken = authenticate.authenticationToken();
         int firstGame = servicegame.makeGame(authToken);
         int secondGame = servicegame.makeGame(authToken);
         HashSet<Data_Game> expectedGameList = new LinkedHashSet<>();
         expectedGameList.add(new Data_Game(firstGame, null, null, null, null));
         expectedGameList.add(new Data_Game(secondGame, null, null, null, null));
-        HashSet<Data_Game> actualGameList = null;
-        try {
-            actualGameList = servicegame.Games_lst(authToken);
-        } catch (UnauthorizedException e) {
-            Assertions.fail("Exception thrown: " + e.getMessage());
-        }
+        HashSet<Data_Game> actualGameList = servicegame.Games_lst(authToken);
         Assertions.assertEquals(expectedGameList, actualGameList);
     }
 
@@ -58,37 +61,34 @@ public class serviceGametest {
         String authToken = authenticate.authenticationToken();
         String username = authenticate.username();
         int gameID = servicegame.makeGame(authToken);
-        try {
-            servicegame.joinGame(authToken, gameID, "WHITE");
-        } catch (UnauthorizedException | DataAccessException e) {
-            Assertions.fail("Exception thrown: " + e.getMessage());
-        }
+        servicegame.joinGame(authToken, gameID, "WHITE");
+
         Data_Game expectedGame = new Data_Game(gameID, username, null, null, null);
-        Data_Game actualGame = Mem_Game_DAO.getGame(gameID);
+        Data_Game actualGame = memgame.getGame(gameID);
         Assertions.assertEquals(expectedGame, actualGame);
     }
 
     @Test
-    void joinGameTestNegative() throws UnauthorizedException {
+    void joinGameTestNegative(){
         int gameID = servicegame.makeGame(authenticate.authenticationToken());
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.joinGame("wrong token", gameID, "WHITE"));
        }
     @Test
-    void clearDBworks() throws UnauthorizedException {
+    void clearDBworks() {
         Game_DAO gameDAO = new Mem_Game_DAO();
         Auth_DAO authDAO = new Mem_Auth_DAO();
         Data_Auth authData = new Data_Auth("Username", "authToken");
         authDAO.addAuthentication(authData);
         servicegame.makeGame(authData.authenticationToken());
-        servicegame.clear();
-        Assertions.assertEquals(gameDAO.Games_lst(), new HashSet<>());
+        servicegame.clearGames();
+        Assertions.assertEquals(new HashSet<>(), gameDAO.Games_lst());
     }
     @Test
-    void clearDBfail() throws UnauthorizedException {
+    void clearDBfail() {
         servicegame.makeGame(authenticate.authenticationToken());
-        HashSet<Data_Game> gameList = Mem_Game_DAO.Games_lst();
-        servicegame.clear();
-        Assertions.assertNotEquals(Mem_Game_DAO.Games_lst(), gameList);
-        Assertions.assertDoesNotThrow(() -> servicegame.clear());
+        HashSet<Data_Game> gameList = memgame.Games_lst();
+        servicegame.clearGames();
+        Assertions.assertNotEquals(memgame.Games_lst(), gameList);
+        Assertions.assertDoesNotThrow(() -> servicegame.clearGames());
     }
 }
