@@ -20,8 +20,12 @@ public class Service_Game{
     public void clearGames() {
         gameDAO.clear();
     }
-    public HashSet<Data_Game> Games_lst(String authToken) throws DataAccessException {
-        authDAO.getAuthentication(authToken);
+    public HashSet<Data_Game> Games_lst(String authToken) throws UnauthorizedException {
+        try {
+            authDAO.getAuthentication(authToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException("Invalid authToken");
+        }
         return gameDAO.Games_lst();
     }
     public int makeGame(String authToken) throws DataAccessException {

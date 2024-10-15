@@ -41,16 +41,20 @@ public class Service_Game_tests{
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.makeGame("faulty token"));
     }
     @Test
-    void listGamesworks() throws DataAccessException {
+    void listGamesworks() throws DataAccessException, UnauthorizedException {
         String authToken = authenticate.authenticationToken();
         int firstGame = servicegame.makeGame(authToken);
         int secondGame = servicegame.makeGame(authToken);
+
         HashSet<Data_Game> expectedGameList = new LinkedHashSet<>();
         expectedGameList.add(new Data_Game(firstGame, null, null, null, null));
         expectedGameList.add(new Data_Game(secondGame, null, null, null, null));
+
         HashSet<Data_Game> actualGameList = servicegame.Games_lst(authToken);
+
         Assertions.assertEquals(expectedGameList, actualGameList);
     }
+
 
     @Test
     void listGamesfailed() {

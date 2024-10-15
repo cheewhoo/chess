@@ -17,10 +17,10 @@ public class HandleGame {
     public Object Games_lst(Request req, Response resp) {
         try {
             String authenticationToken = req.headers("authorization");
-            HashSet<Data_Game> gamesList = gameService.Games_lst(authenticationToken);
+            HashSet<Data_Game> gamesList = gameService.Games_lst(authenticationToken);  // No DataAccessException here
             resp.status(200);
             return new Gson().toJson(gamesList);
-        } catch (DataAccessException e) {
+        } catch (UnauthorizedException e) {
             resp.status(401);
             return "{ \"error\": \"Not authorized.\" }";
         } catch (Exception e) {
