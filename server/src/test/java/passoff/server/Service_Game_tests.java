@@ -8,15 +8,15 @@ import service.Service_Game;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
-public class serviceGametest {
+public class Service_Game_tests{
 
-    private Service_Game servicegame;
-    private Mem_Game_DAO memgame;
-    private Mem_Auth_DAO memauth;
-    private Data_Auth authenticate;
+    private static Service_Game servicegame;
+    private static Mem_Game_DAO memgame;
+    private static Mem_Auth_DAO memauth;
+    private static Data_Auth authenticate;
 
     @BeforeAll
-    void setup() {
+    static void setup() {
         memgame = new Mem_Game_DAO();
         memauth = new Mem_Auth_DAO();
         servicegame = new Service_Game(memgame, memauth);
@@ -30,7 +30,7 @@ public class serviceGametest {
     }
 
     @Test
-    void makeGameworks(){
+    void makeGameworks() throws DataAccessException{
         int firstID = servicegame.makeGame(authenticate.authenticationToken());
         Assertions.assertTrue(memgame.gameExists(firstID));
         int secondID = servicegame.makeGame(authenticate.authenticationToken());
@@ -41,7 +41,7 @@ public class serviceGametest {
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.makeGame("faulty token"));
     }
     @Test
-    public void listGamesworks(){
+    void listGamesworks() throws DataAccessException {
         String authToken = authenticate.authenticationToken();
         int firstGame = servicegame.makeGame(authToken);
         int secondGame = servicegame.makeGame(authToken);
@@ -57,7 +57,7 @@ public class serviceGametest {
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.Games_lst("wrong token"));
     }
     @Test
-    public void JoinGameWorks() throws UnauthorizedException, DataAccessException {
+    void JoinGameWorks() throws UnauthorizedException, DataAccessException {
         String authToken = authenticate.authenticationToken();
         String username = authenticate.username();
         int gameID = servicegame.makeGame(authToken);
@@ -69,12 +69,12 @@ public class serviceGametest {
     }
 
     @Test
-    void joinGameTestNegative(){
+    void joinGameTestNegative() throws DataAccessException {
         int gameID = servicegame.makeGame(authenticate.authenticationToken());
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.joinGame("wrong token", gameID, "WHITE"));
        }
     @Test
-    void clearDBworks() {
+    void clearDBworks() throws DataAccessException{
         Game_DAO gameDAO = new Mem_Game_DAO();
         Auth_DAO authDAO = new Mem_Auth_DAO();
         Data_Auth authData = new Data_Auth("Username", "authToken");
@@ -84,7 +84,7 @@ public class serviceGametest {
         Assertions.assertEquals(new HashSet<>(), gameDAO.Games_lst());
     }
     @Test
-    void clearDBfail() {
+    void clearDBfail() throws DataAccessException {
         servicegame.makeGame(authenticate.authenticationToken());
         HashSet<Data_Game> gameList = memgame.Games_lst();
         servicegame.clearGames();
