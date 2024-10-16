@@ -24,7 +24,7 @@ public class Service_User_tests{
         user = new Data_User("Username", "password");
     }
     @Test
-    void makeuserworks() throws DataAccessException {
+    void makeuserworks() throws DataAccessException, UnauthorizedException {
         Data_Auth authenticateResult = serviceuser.makeUser(user);
         Assertions.assertEquals(memauth.getAuthentication(authenticateResult.authenticationToken()), authenticateResult);
     }
@@ -41,9 +41,13 @@ public class Service_User_tests{
     }
     @Test
     void loginfails() throws UnauthorizedException, DataAccessException {
-        Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.loginUser(user));
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
+            serviceuser.loginUser(user);
+        });
         serviceuser.makeUser(user);
-        Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.loginUser(new Data_User(user.username(), "wrongPass")));
+        Assertions.assertThrows(UnauthorizedException.class, () -> {
+            serviceuser.loginUser(new Data_User(user.username(), "wrong password"));
+        });
     }
     @Test
     void logoutworks() throws UnauthorizedException, DataAccessException {
@@ -52,12 +56,12 @@ public class Service_User_tests{
         Assertions.assertThrows(DataAccessException.class, () -> memauth.getAuthentication(authenticate.authenticationToken()));
     }
     @Test
-    void logoutfails() throws DataAccessException {
+    void logoutfails() throws DataAccessException, UnauthorizedException {
         Data_Auth auth = serviceuser.makeUser(user);
         Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.logoutUser("failed Auth"));
     }
     @Test
-    void clearworks() throws DataAccessException {
+    void clearworks() throws DataAccessException, UnauthorizedException {
         Data_Auth authenticate = serviceuser.makeUser(user);
         serviceuser.clearUsers();
         Assertions.assertThrows(DataAccessException.class, () -> memuser.getUser(user.username()));
