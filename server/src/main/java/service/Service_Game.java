@@ -28,12 +28,17 @@ public class Service_Game{
         }
         return gameDAO.Games_lst();
     }
-    public int makeGame(String authToken) throws DataAccessException {
-        authDAO.getAuthentication(authToken);
+    public int makeGame(String authToken) throws UnauthorizedException, DataAccessException {
+        try {
+            authDAO.getAuthentication(authToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException("Invalid authToken");
+        }
         int newgameID;
         do {
             newgameID = ThreadLocalRandom.current().nextInt(1, 10000);
         } while (gameDAO.gameExists(newgameID));
+
         gameDAO.makeGame(new Data_Game(newgameID, null, null, null, null));
         return newgameID;
     }
