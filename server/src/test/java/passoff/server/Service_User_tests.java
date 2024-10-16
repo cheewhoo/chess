@@ -31,7 +31,7 @@ public class Service_User_tests{
     @Test
     void makeuserfails() throws UnauthorizedException, DataAccessException {
         serviceuser.makeUser(user);
-        Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.makeUser(user));
+        Assertions.assertThrows(DataAccessException.class, () -> serviceuser.makeUser(user));
     }
     @Test
     void loginworks() throws UnauthorizedException, DataAccessException {
@@ -41,11 +41,11 @@ public class Service_User_tests{
     }
     @Test
     void loginfails() throws UnauthorizedException, DataAccessException {
-        Assertions.assertThrows(UnauthorizedException.class, () -> {
+        Assertions.assertThrows(DataAccessException.class, () -> {
             serviceuser.loginUser(user);
         });
         serviceuser.makeUser(user);
-        Assertions.assertThrows(UnauthorizedException.class, () -> {
+        Assertions.assertThrows(DataAccessException.class, () -> {
             serviceuser.loginUser(new Data_User(user.username(), "wrong password"));
         });
     }
@@ -58,7 +58,7 @@ public class Service_User_tests{
     @Test
     void logoutfails() throws DataAccessException, UnauthorizedException {
         Data_Auth auth = serviceuser.makeUser(user);
-        Assertions.assertThrows(UnauthorizedException.class, () -> serviceuser.logoutUser("failed Auth"));
+        Assertions.assertThrows(DataAccessException.class, () -> serviceuser.logoutUser("failed Auth"));
     }
     @Test
     void clearworks() throws DataAccessException, UnauthorizedException {
