@@ -31,9 +31,9 @@ public class Service_Game_tests{
 
     @Test
     void makeGameworks() throws DataAccessException, UnauthorizedException {
-        int firstID = servicegame.makeGame(authenticate.authenticationToken());
+        int firstID = servicegame.makeGame(authenticate.authToken());
         Assertions.assertTrue(memgame.gameExists(firstID));
-        int secondID = servicegame.makeGame(authenticate.authenticationToken());
+        int secondID = servicegame.makeGame(authenticate.authToken());
         Assertions.assertNotEquals(firstID, secondID);
     }
     @Test
@@ -51,7 +51,7 @@ public class Service_Game_tests{
 
     @Test
     void listGamesworks() throws DataAccessException, UnauthorizedException {
-        String authToken = authenticate.authenticationToken();
+        String authToken = authenticate.authToken();
         int firstGame = servicegame.makeGame(authToken);
         int secondGame = servicegame.makeGame(authToken);
         HashSet<Data_Game> expectedGameList = new LinkedHashSet<>();
@@ -67,7 +67,7 @@ public class Service_Game_tests{
     }
     @Test
     void JoinGameWorks() throws UnauthorizedException, DataAccessException {
-        String authToken = authenticate.authenticationToken();
+        String authToken = authenticate.authToken();
         String username = authenticate.username();
         int gameID = servicegame.makeGame(authToken);
         servicegame.joinGame(authToken, gameID, "WHITE");
@@ -79,7 +79,7 @@ public class Service_Game_tests{
 
     @Test
     void joinGameTestNegative() throws DataAccessException, UnauthorizedException {
-        int gameID = servicegame.makeGame(authenticate.authenticationToken());
+        int gameID = servicegame.makeGame(authenticate.authToken());
         Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.joinGame("wrong token", gameID, "WHITE"));
        }
     @Test
@@ -88,13 +88,13 @@ public class Service_Game_tests{
         Auth_DAO authDAO = new Mem_Auth_DAO();
         Data_Auth authData = new Data_Auth("Username", "authToken");
         authDAO.addAuthentication(authData);
-        servicegame.makeGame(authData.authenticationToken());
+        servicegame.makeGame(authData.authToken());
         servicegame.clearGames();
         Assertions.assertEquals(new HashSet<>(), gameDAO.Games_lst());
     }
     @Test
     void clearDBfail() throws DataAccessException, UnauthorizedException {
-        servicegame.makeGame(authenticate.authenticationToken());
+        servicegame.makeGame(authenticate.authToken());
         HashSet<Data_Game> gameList = memgame.Games_lst();
         servicegame.clearGames();
         Assertions.assertNotEquals(memgame.Games_lst(), gameList);

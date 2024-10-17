@@ -26,7 +26,7 @@ public class Service_User_tests{
     @Test
     void makeuserworks() throws DataAccessException, UnauthorizedException {
         Data_Auth authenticateResult = serviceuser.makeUser(user);
-        Assertions.assertEquals(memauth.getAuthentication(authenticateResult.authenticationToken()), authenticateResult);
+        Assertions.assertEquals(memauth.getAuthentication(authenticateResult.authToken()), authenticateResult);
     }
     @Test
     void makeuserfails() throws UnauthorizedException, DataAccessException {
@@ -37,7 +37,7 @@ public class Service_User_tests{
     void loginworks() throws UnauthorizedException, DataAccessException {
         serviceuser.makeUser(user);
         Data_Auth authData = serviceuser.loginUser(user);
-        Assertions.assertEquals(memauth.getAuthentication(authData.authenticationToken()), authData);
+        Assertions.assertEquals(memauth.getAuthentication(authData.authToken()), authData);
     }
     @Test
     void loginfails() throws UnauthorizedException, DataAccessException {
@@ -52,8 +52,8 @@ public class Service_User_tests{
     @Test
     void logoutworks() throws UnauthorizedException, DataAccessException {
         Data_Auth authenticate = serviceuser.makeUser(user);
-        serviceuser.logoutUser(authenticate.authenticationToken());
-        Assertions.assertThrows(DataAccessException.class, () -> memauth.getAuthentication(authenticate.authenticationToken()));
+        serviceuser.logoutUser(authenticate.authToken());
+        Assertions.assertThrows(DataAccessException.class, () -> memauth.getAuthentication(authenticate.authToken()));
     }
     @Test
     void logoutfails() throws DataAccessException, UnauthorizedException {
@@ -65,7 +65,7 @@ public class Service_User_tests{
         Data_Auth authenticate = serviceuser.makeUser(user);
         serviceuser.clearUsers();
         Assertions.assertThrows(DataAccessException.class, () -> memuser.getUser(user.username()));
-        Assertions.assertThrows(DataAccessException.class, () -> memauth.getAuthentication(authenticate.authenticationToken()));
+        Assertions.assertThrows(DataAccessException.class, () -> memauth.getAuthentication(authenticate.authToken()));
     }
     @Test
     void clearfails() {

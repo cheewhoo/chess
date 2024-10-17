@@ -21,7 +21,7 @@ public class Mem_Auth_DAO implements Auth_DAO {
     @Override
     public Data_Auth getAuthentication(String authToken) throws DataAccessException {
         Data_Auth foundAuth = authDatabase.stream()
-                .filter(authData -> authData.authenticationToken().equals(authToken))
+                .filter(authData -> authData.authToken().equals(authToken))
                 .findAny()
                 .orElse(null);
 
@@ -36,7 +36,7 @@ public class Mem_Auth_DAO implements Auth_DAO {
         Iterator<Data_Auth> iterator = authDatabase.iterator();
         while (iterator.hasNext()) {
             Data_Auth authData = iterator.next();
-            if (authData.authenticationToken().equals(authToken)) {
+            if (authData.authToken().equals(authToken)) {
                 iterator.remove();
                 return;
             }

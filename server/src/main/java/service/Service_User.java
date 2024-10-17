@@ -23,7 +23,7 @@ public class Service_User {
         authDAO.addAuthentication(authData);
         return authData;
     }
-    public Data_Auth loginUser(Data_User userinfo) throws DataAccessException, UnauthorizedException {
+    public Data_Auth loginUser(Data_User userinfo) throws DataAccessException {
         boolean userAuthenticated = userDAO.authUser(userinfo.username(), userinfo.password());
         if (userAuthenticated) {
             String authToken = UUID.randomUUID().toString();
