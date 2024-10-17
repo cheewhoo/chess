@@ -43,6 +43,7 @@ public class HandleUser {
     }
 
     public Object loginUser(Request req, Response resp) {
+        Error_model errorModel = new Error_model("");
         try {
             Data_User userData = new Gson().fromJson(req.body(), Data_User.class);
             Data_Auth authData = userService.loginUser(userData);
@@ -50,7 +51,8 @@ public class HandleUser {
             return new Gson().toJson(authData);
         } catch (DataAccessException e) {
             resp.status(401);
-            return "{ \"error\": \"Unauthorized.\" }";
+            errorModel = new Error_model("Error: " + e.getMessage());
+            return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
             return "{ \"error\": \"" + e.getMessage() + "\" }";
