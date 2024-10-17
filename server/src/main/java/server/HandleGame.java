@@ -87,7 +87,8 @@ public class HandleGame {
                 return "{}";
             } else if (joinResult == 1) {
                 resp.status(400);
-                return "{ \"error\": \"Bad request.\" }";
+                errorModel = new Error_model("Error: bad request");
+                return new Gson().toJson(errorModel);
             } else {
                 resp.status(403);
                 errorModel = new Error_model("Error: already taken");
@@ -95,10 +96,12 @@ public class HandleGame {
             }
         } catch (DataAccessException e) {
             resp.status(400);
-            return "{ \"error\": \"Bad request.\" }";
+            errorModel = new Error_model("Error: bad request");
+            return new Gson().toJson(errorModel);
         } catch (UnauthorizedException e) {
             resp.status(401);
-            return "{ \"error\": \"Not authorized.\" }";
+            errorModel = new Error_model("Error: unauthorized");
+            return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
             return "{ \"error\": \"" + e.getMessage() + "\" }";
