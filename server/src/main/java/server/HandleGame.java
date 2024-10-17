@@ -47,14 +47,16 @@ public class HandleGame {
             resp.status(400);
             return "{ \"error\": \"Invalid request body.\" }";
         }
+        Error_model errorModel = new Error_model("");
         try {
             String authToken = req.headers("authorization");
             int newgameID =  gameService.makeGame(authToken);
             resp.status(200);
             return "{ \"gameID\": " + newgameID + " }";
-        } catch (DataAccessException e) {
+        } catch (UnauthorizedException e) {
             resp.status(401);
-            return "{ \"error\": \"Not authorized.\" }";
+            errorModel = new Error_model("Error: unauthorized");
+            return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
             return "{ \"error\": \"" + e.getMessage() + "\" }";
@@ -65,11 +67,17 @@ public class HandleGame {
             resp.status(400);
             return "{ \"error\": \"Invalid request body.\" }";
         }
+        Error_model errorModel = new Error_model("");
         try {
             String authToken = req.headers("Authorization");
             var joinData = new Gson().fromJson(req.body(), JoinGameData.class);
             int joinResult = gameService.joinGame(authToken, joinData.gameID(), joinData.playerColor());
+            if(joinData.playerColor == null){
+                resp.status(400);
+                errorModel = new Error_model("Error: bad request");
+                return new Gson().toJson(errorModel);
 
+            }
             if (joinResult == 0) {
                 resp.status(200);
                 return "{}";

@@ -1,5 +1,4 @@
 package dataaccess;
-
 import model.Data_User;
 import java.util.HashSet;
 import java.util.Optional;
@@ -20,9 +19,9 @@ public class Mem_User_DAO implements User_DAO {
     }
 
     @Override
-    public void makeUser(Data_User user) throws DataAccessException {
+    public void makeUser(Data_User user) throws UserAlreadyExistsException {
         if (userDatabase.stream().anyMatch(existingUser -> existingUser.username().equals(user.username()))) {
-            throw new DataAccessException("User already exists: " + user.username());
+            throw new UserAlreadyExistsException("User already exists: " + user.username());
         }
         userDatabase.add(user);
     }
@@ -38,6 +37,15 @@ public class Mem_User_DAO implements User_DAO {
         } else {
             throw new DataAccessException("Unknown User: " + username);
         }
+    }
+
+    @Override
+    public boolean userExists(String username) throws DataAccessException {
+        if (username == null || username.isEmpty()) {
+            throw new DataAccessException("Username cannot be null or empty.");
+        }
+        return userDatabase.stream()
+                .anyMatch(existingUser -> existingUser.username().equals(username));
     }
 
     @Override

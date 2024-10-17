@@ -2,6 +2,7 @@ package service;
 import dataaccess.Auth_DAO;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
+import dataaccess.*;
 import dataaccess.User_DAO;
 import model.Data_Auth;
 import model.Data_User;
@@ -13,9 +14,12 @@ public class Service_User {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }
-    public Data_Auth makeUser(Data_User userData) throws DataAccessException, UnauthorizedException {
-        if (userData.username() == null || userData.password() == null) {
+    public Data_Auth makeUser(Data_User userData) throws DataAccessException, UnauthorizedException,UserAlreadyExistsException {
+        if (userData.username() == null || userData.password() == null || userData.email() == null) {
             throw new UnauthorizedException("Bad user data.");
+        }
+        if (userDAO.userExists(userData.username())) {
+            throw new UserAlreadyExistsException("User already exists.");
         }
         userDAO.makeUser(userData);
         String authToken = UUID.randomUUID().toString();
