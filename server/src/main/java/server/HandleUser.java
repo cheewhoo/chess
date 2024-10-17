@@ -32,7 +32,8 @@ public class HandleUser {
             return new Gson().toJson(errorModel);
         } catch (JsonSyntaxException e) {
             resp.status(400);
-            return "{ \"error\": \"Invalid request body.\" }";
+            errorModel = new Error_model("Error: bad request");
+            return new Gson().toJson(errorModel);
         } catch (DataAccessException e) {
             resp.status(500);
             return "{ \"error\": \"" + e.getMessage() + "\" }";

@@ -15,6 +15,7 @@ public class HandleGame {
         this.gameService = gameService;
     }
     public Object Games_lst(Request req, Response resp) {
+        Error_model errorModel = new Error_model("");
         try {
             String authenticationToken = req.headers("authorization");
             HashSet<Data_Game> gamesList = gameService.Games_lst(authenticationToken);
@@ -23,7 +24,8 @@ public class HandleGame {
             return new Gson().toJson(new ResponseWrapper(gamesList));
         } catch (UnauthorizedException e) {
             resp.status(401);
-            return "{ \"error\": \"Not authorized.\" }";
+            errorModel = new Error_model("Error: unauthorized");
+            return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
             return "{ \"Error\": \"" + e.getMessage() + "\" }";
@@ -43,11 +45,12 @@ public class HandleGame {
     }
 
     public Object makeGame(Request req, Response resp) {
+        Error_model errorModel = new Error_model("");
         if (!req.body().contains("\"gameName\":")) {
             resp.status(400);
-            return "{ \"error\": \"Invalid request body.\" }";
+            errorModel = new Error_model("Error: bad request");
+            return new Gson().toJson(errorModel);
         }
-        Error_model errorModel = new Error_model("");
         try {
             String authToken = req.headers("authorization");
             int newgameID =  gameService.makeGame(authToken);
@@ -63,11 +66,12 @@ public class HandleGame {
         }
     }
     public Object joinExisitngGame(Request req, Response resp) {
+        Error_model errorModel = new Error_model("");
         if (!req.body().contains("\"gameID\":")) {
             resp.status(400);
-            return "{ \"error\": \"Invalid request body.\" }";
+            errorModel = new Error_model("Error: bad request");
+            return new Gson().toJson(errorModel);
         }
-        Error_model errorModel = new Error_model("");
         try {
             String authToken = req.headers("Authorization");
             var joinData = new Gson().fromJson(req.body(), JoinGameData.class);
@@ -86,7 +90,8 @@ public class HandleGame {
                 return "{ \"error\": \"Bad request.\" }";
             } else {
                 resp.status(403);
-                return "{ \"error\": \"Slot already taken.\" }";
+                errorModel = new Error_model("Error: already taken");
+                return new Gson().toJson(errorModel);
             }
         } catch (DataAccessException e) {
             resp.status(400);
