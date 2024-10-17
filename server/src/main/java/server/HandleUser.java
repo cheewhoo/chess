@@ -28,7 +28,8 @@ public class HandleUser {
             return new Gson().toJson(authData);
         } catch (UserAlreadyExistsException e) {
             resp.status(403);
-            return "{ \"error\": \"Username already exists.\" }";
+            errorModel = new Error_model("Error: already taken");
+            return new Gson().toJson(errorModel);
         } catch (JsonSyntaxException e) {
             resp.status(400);
             return "{ \"error\": \"Invalid request body.\" }";
@@ -59,6 +60,7 @@ public class HandleUser {
         }
     }
     public Object logoutUser(Request req, Response resp) {
+        Error_model errorModel = new Error_model("");
         try {
             String authToken = req.headers("authorization");
             userService.logoutUser(authToken);
@@ -66,7 +68,8 @@ public class HandleUser {
             return "{}";
         } catch (DataAccessException e) {
             resp.status(401);
-            return "{ \"error\": \"Unauthorized.\" }";
+            errorModel = new Error_model("Error: unauthorized");
+            return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
             return "{ \"error\": \"" + e.getMessage() + "\" }";
