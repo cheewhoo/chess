@@ -53,8 +53,8 @@ public class Service_Game{
         if (gameDAO.gameExists(gameID)) {
             gameData = gameDAO.getGame(gameID);
         } else return 1;
-        String whiteUser = gameData.whiteUser();
-        String blackUser = gameData.blackUser();
+        String whiteUser = gameData.whiteUsername();
+        String blackUser = gameData.blackUsername();
         if (Objects.equals(color, "WHITE")) {
             if (whiteUser != null) return 2;
             else whiteUser = authData.username();

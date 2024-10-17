@@ -18,8 +18,9 @@ public class HandleGame {
         try {
             String authenticationToken = req.headers("authorization");
             HashSet<Data_Game> gamesList = gameService.Games_lst(authenticationToken);
+
             resp.status(200);
-            return new Gson().toJson(gamesList);
+            return new Gson().toJson(new ResponseWrapper(gamesList));
         } catch (UnauthorizedException e) {
             resp.status(401);
             return "{ \"error\": \"Not authorized.\" }";
@@ -28,6 +29,19 @@ public class HandleGame {
             return "{ \"Error\": \"" + e.getMessage() + "\" }";
         }
     }
+
+    private static class ResponseWrapper {
+        private final HashSet<Data_Game> games;
+
+        public ResponseWrapper(HashSet<Data_Game> games) {
+            this.games = games;
+        }
+
+        public HashSet<Data_Game> getGames() {
+            return games;
+        }
+    }
+
     public Object makeGame(Request req, Response resp) {
         if (!req.body().contains("\"gameName\":")) {
             resp.status(400);
