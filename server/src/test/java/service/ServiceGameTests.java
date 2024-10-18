@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 
 public class ServiceGameTests{
 
-    private static Service_Game servicegame;
+    private static ServiceGame servicegame;
     private static Mem_Game_DAO memgame;
     private static Mem_Auth_DAO memauth;
     private static Data_Auth authenticate;
@@ -18,7 +18,7 @@ public class ServiceGameTests{
     static void setup() {
         memgame = new Mem_Game_DAO();
         memauth = new Mem_Auth_DAO();
-        servicegame = new Service_Game(memgame, memauth);
+        servicegame = new ServiceGame(memgame, memauth);
 
         authenticate = new Data_Auth("Username", "authToken");
         memauth.addAuthentication(authenticate);
@@ -56,16 +56,16 @@ public class ServiceGameTests{
         HashSet<Data_Game> expectedGameList = new LinkedHashSet<>();
         expectedGameList.add(new Data_Game(firstGame, null, null, null, null));
         expectedGameList.add(new Data_Game(secondGame, null, null, null, null));
-        HashSet<Data_Game> actualGameList = servicegame.Games_lst(authToken);
+        HashSet<Data_Game> actualGameList = servicegame.GamesList(authToken);
         Assertions.assertEquals(expectedGameList, actualGameList);
     }
 
     @Test
     void listGamesfailed() {
-        Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.Games_lst("wrong token"));
+        Assertions.assertThrows(UnauthorizedException.class, () -> servicegame.GamesList("wrong token"));
     }
     @Test
-    void JoinGameWorks() throws UnauthorizedException, DataAccessException {
+    void JoinGameworks() throws UnauthorizedException, DataAccessException {
         String authToken = authenticate.authToken();
         String username = authenticate.username();
         int gameID = servicegame.makeGame(authToken);
@@ -89,14 +89,14 @@ public class ServiceGameTests{
         authDAO.addAuthentication(authData);
         servicegame.makeGame(authData.authToken());
         servicegame.clearGames();
-        Assertions.assertEquals(new HashSet<>(), gameDAO.Games_lst());
+        Assertions.assertEquals(new HashSet<>(), gameDAO.GamesList());
     }
     @Test
     void clearDBfail() throws DataAccessException, UnauthorizedException {
         servicegame.makeGame(authenticate.authToken());
-        HashSet<Data_Game> gameList = memgame.Games_lst();
+        HashSet<Data_Game> gameList = memgame.GamesList();
         servicegame.clearGames();
-        Assertions.assertNotEquals(memgame.Games_lst(), gameList);
+        Assertions.assertNotEquals(memgame.GamesList(), gameList);
         Assertions.assertDoesNotThrow(() -> servicegame.clearGames());
     }
 }

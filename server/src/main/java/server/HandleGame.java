@@ -4,27 +4,27 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
 import model.Data_Game;
-import service.Service_Game;
+import service.ServiceGame;
 import spark.Request;
 import spark.Response;
 import java.util.HashSet;
 
 public class HandleGame {
-    private final Service_Game gameService;
-    public HandleGame(Service_Game gameService) {
+    private final ServiceGame gameService;
+    public HandleGame(ServiceGame gameService) {
         this.gameService = gameService;
     }
-    public Object Games_lst(Request req, Response resp) {
-        Error_model errorModel = new Error_model("");
+    public Object GamesList(Request req, Response resp) {
+        ErrorModel errorModel = new ErrorModel("");
         try {
             String authenticationToken = req.headers("authorization");
-            HashSet<Data_Game> gamesList = gameService.Games_lst(authenticationToken);
+            HashSet<Data_Game> gamesList = gameService.GamesList(authenticationToken);
 
             resp.status(200);
             return new Gson().toJson(new ResponseWrapper(gamesList));
         } catch (UnauthorizedException e) {
             resp.status(401);
-            errorModel = new Error_model("Error: unauthorized");
+            errorModel = new ErrorModel("Error: unauthorized");
             return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
@@ -45,10 +45,10 @@ public class HandleGame {
     }
 
     public Object makeGame(Request req, Response resp) {
-        Error_model errorModel = new Error_model("");
+        ErrorModel errorModel = new ErrorModel("");
         if (!req.body().contains("\"gameName\":")) {
             resp.status(400);
-            errorModel = new Error_model("Error: bad request");
+            errorModel = new ErrorModel("Error: bad request");
             return new Gson().toJson(errorModel);
         }
         try {
@@ -58,7 +58,7 @@ public class HandleGame {
             return "{ \"gameID\": " + newgameID + " }";
         } catch (UnauthorizedException e) {
             resp.status(401);
-            errorModel = new Error_model("Error: unauthorized");
+            errorModel = new ErrorModel("Error: unauthorized");
             return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
@@ -66,10 +66,10 @@ public class HandleGame {
         }
     }
     public Object joinExisitngGame(Request req, Response resp) {
-        Error_model errorModel = new Error_model("");
+        ErrorModel errorModel = new ErrorModel("");
         if (!req.body().contains("\"gameID\":")) {
             resp.status(400);
-            errorModel = new Error_model("Error: bad request");
+            errorModel = new ErrorModel("Error: bad request");
             return new Gson().toJson(errorModel);
         }
         try {
@@ -78,7 +78,7 @@ public class HandleGame {
             int joinResult = gameService.joinGame(authToken, joinData.gameID(), joinData.playerColor());
             if(joinData.playerColor == null){
                 resp.status(400);
-                errorModel = new Error_model("Error: bad request");
+                errorModel = new ErrorModel("Error: bad request");
                 return new Gson().toJson(errorModel);
 
             }
@@ -87,20 +87,20 @@ public class HandleGame {
                 return "{}";
             } else if (joinResult == 1) {
                 resp.status(400);
-                errorModel = new Error_model("Error: bad request");
+                errorModel = new ErrorModel("Error: bad request");
                 return new Gson().toJson(errorModel);
             } else {
                 resp.status(403);
-                errorModel = new Error_model("Error: already taken");
+                errorModel = new ErrorModel("Error: already taken");
                 return new Gson().toJson(errorModel);
             }
         } catch (DataAccessException e) {
             resp.status(400);
-            errorModel = new Error_model("Error: bad request");
+            errorModel = new ErrorModel("Error: bad request");
             return new Gson().toJson(errorModel);
         } catch (UnauthorizedException e) {
             resp.status(401);
-            errorModel = new Error_model("Error: unauthorized");
+            errorModel = new ErrorModel("Error: unauthorized");
             return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);

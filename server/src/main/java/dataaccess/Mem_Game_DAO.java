@@ -12,7 +12,7 @@ public class Mem_Game_DAO implements Game_DAO {
     }
 
     @Override
-    public HashSet<Data_Game> Games_lst() {
+    public HashSet<Data_Game> GamesList() {
         return new HashSet<>(gameDatabase); // Return a copy of the game database
     }
 

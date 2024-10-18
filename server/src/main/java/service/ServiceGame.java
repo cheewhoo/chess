@@ -10,23 +10,23 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Service_Game{
+public class ServiceGame {
     Game_DAO gameDAO;
     Auth_DAO authDAO;
-    public Service_Game(Game_DAO gameDAO, Auth_DAO authDAO) {
+    public ServiceGame(Game_DAO gameDAO, Auth_DAO authDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }
     public void clearGames() {
         gameDAO.clear();
     }
-    public HashSet<Data_Game> Games_lst(String authToken) throws UnauthorizedException {
+    public HashSet<Data_Game> GamesList(String authToken) throws UnauthorizedException {
         try {
             authDAO.getAuthentication(authToken);
         } catch (DataAccessException e) {
             throw new UnauthorizedException("Invalid authToken");
         }
-        return gameDAO.Games_lst();
+        return gameDAO.GamesList();
     }
     public int makeGame(String authToken) throws UnauthorizedException, DataAccessException {
         try {

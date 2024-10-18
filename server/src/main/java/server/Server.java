@@ -1,7 +1,7 @@
 package server;
 import spark.*;
 import service.Service_User;
-import service.Service_Game;
+import service.ServiceGame;
 import com.google.gson.Gson;
 import dataaccess.*;
 
@@ -14,7 +14,7 @@ public class Server {
         Spark.post("/user", userHandler::registerUser);
         Spark.post("/session", userHandler::loginUser);
         Spark.delete("/session", userHandler::logoutUser);
-        Spark.get("/game", gameHandler::Games_lst);
+        Spark.get("/game", gameHandler::GamesList);
         Spark.post("/game", gameHandler::makeGame);
         Spark.put("/game", gameHandler::joinExisitngGame);
         Spark.awaitInitialization();
@@ -31,7 +31,7 @@ public class Server {
     Auth_DAO authDAO;
     Game_DAO gameDAO;
     Service_User serviceuser;
-    Service_Game servicegame;
+    ServiceGame servicegame;
     HandleUser userHandler;
     HandleGame gameHandler;
     public Server() {
@@ -39,7 +39,7 @@ public class Server {
         authDAO = new Mem_Auth_DAO();
         gameDAO = new Mem_Game_DAO();
         serviceuser = new Service_User(userDAO, authDAO);
-        servicegame = new Service_Game(gameDAO, authDAO);
+        servicegame = new ServiceGame(gameDAO, authDAO);
         userHandler = new HandleUser(serviceuser);
         gameHandler = new HandleGame(servicegame);
     }

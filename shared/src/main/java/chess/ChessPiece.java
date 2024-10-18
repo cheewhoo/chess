@@ -109,7 +109,7 @@ public class ChessPiece {
                 int newRow = row + dr;
                 int newCol = col + dc;
                 if (isValidPosition(newRow, newCol) && isEmptyOrEnemy(board, newRow, newCol)) {
-                    moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null)); //move from current to new row and column
+                    moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
                 }
             }
         }
