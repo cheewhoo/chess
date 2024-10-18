@@ -11,13 +11,13 @@ public class ServiceGameTests{
 
     private static ServiceGame servicegame;
     private static Mem_Game_DAO memgame;
-    private static Mem_Auth_DAO memauth;
+    private static MemAuthDAO memauth;
     private static Data_Auth authenticate;
 
     @BeforeAll
     static void setup() {
         memgame = new Mem_Game_DAO();
-        memauth = new Mem_Auth_DAO();
+        memauth = new MemAuthDAO();
         servicegame = new ServiceGame(memgame, memauth);
 
         authenticate = new Data_Auth("Username", "authToken");
@@ -83,8 +83,8 @@ public class ServiceGameTests{
        }
     @Test
     void clearDBworks() throws DataAccessException, UnauthorizedException {
-        Game_DAO gameDAO = new Mem_Game_DAO();
-        Auth_DAO authDAO = new Mem_Auth_DAO();
+        GameDAO gameDAO = new Mem_Game_DAO();
+        AuthDAO authDAO = new MemAuthDAO();
         Data_Auth authData = new Data_Auth("Username", "authToken");
         authDAO.addAuthentication(authData);
         servicegame.makeGame(authData.authToken());

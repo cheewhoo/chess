@@ -4,7 +4,7 @@ import model.Data_Game;
 import java.util.HashSet;
 import java.util.Optional;
 
-public class Mem_Game_DAO implements Game_DAO {
+public class Mem_Game_DAO implements GameDAO {
     private HashSet<Data_Game> gameDatabase;
 
     public Mem_Game_DAO() {

@@ -14,7 +14,7 @@ public class HandleGame {
     public HandleGame(ServiceGame gameService) {
         this.gameService = gameService;
     }
-    public Object GamesList(Request req, Response resp) {
+    public Object Gameslist(Request req, Response resp) {
         ErrorModel errorModel = new ErrorModel("");
         try {
             String authenticationToken = req.headers("authorization");

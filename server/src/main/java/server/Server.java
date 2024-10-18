@@ -14,7 +14,7 @@ public class Server {
         Spark.post("/user", userHandler::registerUser);
         Spark.post("/session", userHandler::loginUser);
         Spark.delete("/session", userHandler::logoutUser);
-        Spark.get("/game", gameHandler::GamesList);
+        Spark.get("/game", gameHandler::Gameslist);
         Spark.post("/game", gameHandler::makeGame);
         Spark.put("/game", gameHandler::joinExisitngGame);
         Spark.awaitInitialization();
@@ -27,16 +27,16 @@ public class Server {
     }
 
 
-    User_DAO userDAO;
-    Auth_DAO authDAO;
-    Game_DAO gameDAO;
+    UserDAO userDAO;
+    AuthDAO authDAO;
+    GameDAO gameDAO;
     Service_User serviceuser;
     ServiceGame servicegame;
     HandleUser userHandler;
     HandleGame gameHandler;
     public Server() {
         userDAO = new Mem_User_DAO();
-        authDAO = new Mem_Auth_DAO();
+        authDAO = new MemAuthDAO();
         gameDAO = new Mem_Game_DAO();
         serviceuser = new Service_User(userDAO, authDAO);
         servicegame = new ServiceGame(gameDAO, authDAO);

@@ -1,8 +1,8 @@
 package service;
 
-import dataaccess.Auth_DAO;
+import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
-import dataaccess.Game_DAO;
+import dataaccess.GameDAO;
 import dataaccess.UnauthorizedException;
 import model.Data_Auth;
 import model.Data_Game;
@@ -11,9 +11,9 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ServiceGame {
-    Game_DAO gameDAO;
-    Auth_DAO authDAO;
-    public ServiceGame(Game_DAO gameDAO, Auth_DAO authDAO) {
+    GameDAO gameDAO;
+    AuthDAO authDAO;
+    public ServiceGame(GameDAO gameDAO, AuthDAO authDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }

@@ -3,7 +3,7 @@ import model.Data_User;
 import java.util.HashSet;
 import java.util.Optional;
 
-public class Mem_User_DAO implements User_DAO {
+public class Mem_User_DAO implements UserDAO {
     private HashSet<Data_User> userDatabase;
 
     public Mem_User_DAO() {

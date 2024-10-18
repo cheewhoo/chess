@@ -7,13 +7,13 @@ public class ServiceUserTests{
 
     private static Service_User serviceuser;
     private static Mem_User_DAO memuser;
-    private static Mem_Auth_DAO memauth;
+    private static MemAuthDAO memauth;
     private Data_User user;
 
     @BeforeAll
     static void starter() {
         memuser = new Mem_User_DAO();
-        memauth = new Mem_Auth_DAO();
+        memauth = new MemAuthDAO();
         serviceuser = new Service_User(memuser, memauth);
     }
     @BeforeEach

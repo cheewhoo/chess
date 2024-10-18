@@ -1,16 +1,16 @@
 package service;
-import dataaccess.Auth_DAO;
+import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
 import dataaccess.*;
-import dataaccess.User_DAO;
+import dataaccess.UserDAO;
 import model.Data_Auth;
 import model.Data_User;
 import java.util.UUID;
 public class Service_User {
-    User_DAO userDAO;
-    Auth_DAO authDAO;
-    public Service_User(User_DAO userDAO, Auth_DAO authDAO) {
+    UserDAO userDAO;
+    AuthDAO authDAO;
+    public Service_User(UserDAO userDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }

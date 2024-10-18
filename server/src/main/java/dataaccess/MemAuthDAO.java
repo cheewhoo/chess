@@ -4,10 +4,10 @@ import model.Data_Auth;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class Mem_Auth_DAO implements Auth_DAO {
+public class MemAuthDAO implements AuthDAO {
     private HashSet<Data_Auth> authDatabase;
 
-    public Mem_Auth_DAO() {
+    public MemAuthDAO() {
         this.authDatabase = new HashSet<>();
     }
 
