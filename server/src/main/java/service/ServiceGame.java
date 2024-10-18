@@ -20,13 +20,13 @@ public class ServiceGame {
     public void clearGames() {
         gameDAO.clear();
     }
-    public HashSet<Data_Game> GamesList(String authToken) throws UnauthorizedException {
+    public HashSet<Data_Game> gamesList(String authToken) throws UnauthorizedException {
         try {
             authDAO.getAuthentication(authToken);
         } catch (DataAccessException e) {
             throw new UnauthorizedException("Invalid authToken");
         }
-        return gameDAO.GamesList();
+        return gameDAO.gamesList();
     }
     public int makeGame(String authToken) throws UnauthorizedException, DataAccessException {
         try {

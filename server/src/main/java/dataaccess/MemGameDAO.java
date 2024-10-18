@@ -4,15 +4,15 @@ import model.Data_Game;
 import java.util.HashSet;
 import java.util.Optional;
 
-public class Mem_Game_DAO implements GameDAO {
+public class MemGameDAO implements GameDAO {
     private HashSet<Data_Game> gameDatabase;
 
-    public Mem_Game_DAO() {
+    public MemGameDAO() {
         gameDatabase = new HashSet<>();
     }
 
     @Override
-    public HashSet<Data_Game> GamesList() {
+    public HashSet<Data_Game> gamesList() {
         return new HashSet<>(gameDatabase); // Return a copy of the game database
     }
 

@@ -14,11 +14,11 @@ public class HandleGame {
     public HandleGame(ServiceGame gameService) {
         this.gameService = gameService;
     }
-    public Object Gameslist(Request req, Response resp) {
+    public Object gamesList(Request req, Response resp) {
         ErrorModel errorModel = new ErrorModel("");
         try {
             String authenticationToken = req.headers("authorization");
-            HashSet<Data_Game> gamesList = gameService.GamesList(authenticationToken);
+            HashSet<Data_Game> gamesList = gameService.gamesList(authenticationToken);
 
             resp.status(200);
             return new Gson().toJson(new ResponseWrapper(gamesList));
