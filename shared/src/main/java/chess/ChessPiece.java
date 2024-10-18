@@ -132,7 +132,9 @@ public class ChessPiece {
                     }
                     if (isEmptyOrEnemy(board, newRow, newCol)) {
                         moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
-                        if (board.getPiece(new ChessPosition(newRow, newCol)) != null) break; // Stop if there's a piece in the way
+                        if (board.getPiece(new ChessPosition(newRow, newCol)) != null){
+                            break; // Stop if there's a piece in the way
+                        }
                     } else {
                         break;
                     }

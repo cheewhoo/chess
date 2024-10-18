@@ -52,16 +52,28 @@ public class Service_Game{
         }
         if (gameDAO.gameExists(gameID)) {
             gameData = gameDAO.getGame(gameID);
-        } else return 1;
+        } else{
+            return 1;
+        }
         String whiteUser = gameData.whiteUsername();
         String blackUser = gameData.blackUsername();
         if (Objects.equals(color, "WHITE")) {
-            if (whiteUser != null) return 2;
-            else whiteUser = authData.username();
+            if (whiteUser != null){
+                return 2;
+            }
+            else{
+                whiteUser = authData.username();
+            }
         } else if (Objects.equals(color, "BLACK")) {
-            if (blackUser != null) return 2;
-            else blackUser = authData.username();
-        } else if (color != null) return 1;
+            if (blackUser != null){
+                return 2;
+            }
+            else{
+                blackUser = authData.username();
+            }
+        } else if (color != null){
+            return 1;
+        }
         gameDAO.updateGame(new Data_Game(gameID, whiteUser, blackUser, gameData.gameName(), gameData.game()));
         return 0;
     }
