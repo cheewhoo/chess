@@ -4,8 +4,8 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UnauthorizedException;
-import model.Data_Auth;
-import model.Data_Game;
+import model.DataAuth;
+import model.DataGame;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,7 +20,7 @@ public class ServiceGame {
     public void clearGames() {
         gameDAO.clear();
     }
-    public HashSet<Data_Game> gamesList(String authToken) throws UnauthorizedException {
+    public HashSet<DataGame> gamesList(String authToken) throws UnauthorizedException {
         try {
             authDAO.getAuthentication(authToken);
         } catch (DataAccessException e) {
@@ -39,12 +39,12 @@ public class ServiceGame {
             newgameID = ThreadLocalRandom.current().nextInt(1, 10000);
         } while (gameDAO.gameExists(newgameID));
 
-        gameDAO.makeGame(new Data_Game(newgameID, null, null, null, null));
+        gameDAO.makeGame(new DataGame(newgameID, null, null, null, null));
         return newgameID;
     }
     public int joinGame(String authToken, int gameID, String color) throws UnauthorizedException, DataAccessException {
-        Data_Game gameData;
-        Data_Auth authData;
+        DataGame gameData;
+        DataAuth authData;
         try {
             authData = authDAO.getAuthentication(authToken);
         } catch (DataAccessException e) {
@@ -74,7 +74,7 @@ public class ServiceGame {
         } else if (color != null){
             return 1;
         }
-        gameDAO.updateGame(new Data_Game(gameID, whiteUser, blackUser, gameData.gameName(), gameData.game()));
+        gameDAO.updateGame(new DataGame(gameID, whiteUser, blackUser, gameData.gameName(), gameData.game()));
         return 0;
     }
 }

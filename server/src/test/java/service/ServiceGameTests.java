@@ -1,7 +1,7 @@
 package service;
 import dataaccess.*;
-import model.Data_Auth;
-import model.Data_Game;
+import model.DataAuth;
+import model.DataGame;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import java.util.HashSet;
@@ -12,7 +12,7 @@ public class ServiceGameTests{
     private static ServiceGame servicegame;
     private static MemGameDAO memgame;
     private static MemAuthDAO memauth;
-    private static Data_Auth authenticate;
+    private static DataAuth authenticate;
 
     @BeforeAll
     static void setup() {
@@ -20,7 +20,7 @@ public class ServiceGameTests{
         memauth = new MemAuthDAO();
         servicegame = new ServiceGame(memgame, memauth);
 
-        authenticate = new Data_Auth("Username", "authToken");
+        authenticate = new DataAuth("Username", "authToken");
         memauth.addAuthentication(authenticate);
     }
     @BeforeEach
@@ -53,10 +53,10 @@ public class ServiceGameTests{
         String authToken = authenticate.authToken();
         int firstGame = servicegame.makeGame(authToken);
         int secondGame = servicegame.makeGame(authToken);
-        HashSet<Data_Game> expectedGameList = new LinkedHashSet<>();
-        expectedGameList.add(new Data_Game(firstGame, null, null, null, null));
-        expectedGameList.add(new Data_Game(secondGame, null, null, null, null));
-        HashSet<Data_Game> actualGameList = servicegame.gamesList(authToken);
+        HashSet<DataGame> expectedGameList = new LinkedHashSet<>();
+        expectedGameList.add(new DataGame(firstGame, null, null, null, null));
+        expectedGameList.add(new DataGame(secondGame, null, null, null, null));
+        HashSet<DataGame> actualGameList = servicegame.gamesList(authToken);
         Assertions.assertEquals(expectedGameList, actualGameList);
     }
 
@@ -71,8 +71,8 @@ public class ServiceGameTests{
         int gameID = servicegame.makeGame(authToken);
         servicegame.joinGame(authToken, gameID, "WHITE");
 
-        Data_Game expectedGame = new Data_Game(gameID, username, null, null, null);
-        Data_Game actualGame = memgame.getGame(gameID);
+        DataGame expectedGame = new DataGame(gameID, username, null, null, null);
+        DataGame actualGame = memgame.getGame(gameID);
         Assertions.assertEquals(expectedGame, actualGame);
     }
 
@@ -85,7 +85,7 @@ public class ServiceGameTests{
     void clearDBworks() throws DataAccessException, UnauthorizedException {
         GameDAO gameDAO = new MemGameDAO();
         AuthDAO authDAO = new MemAuthDAO();
-        Data_Auth authData = new Data_Auth("Username", "authToken");
+        DataAuth authData = new DataAuth("Username", "authToken");
         authDAO.addAuthentication(authData);
         servicegame.makeGame(authData.authToken());
         servicegame.clearGames();
@@ -94,7 +94,7 @@ public class ServiceGameTests{
     @Test
     void clearDBfail() throws DataAccessException, UnauthorizedException {
         servicegame.makeGame(authenticate.authToken());
-        HashSet<Data_Game> gameList = memgame.gamesList();
+        HashSet<DataGame> gameList = memgame.gamesList();
         servicegame.clearGames();
         Assertions.assertNotEquals(memgame.gamesList(), gameList);
         Assertions.assertDoesNotThrow(() -> servicegame.clearGames());

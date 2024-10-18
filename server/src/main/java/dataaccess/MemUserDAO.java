@@ -1,17 +1,17 @@
 package dataaccess;
-import model.Data_User;
+import model.DataUser;
 import java.util.HashSet;
 import java.util.Optional;
 
 public class MemUserDAO implements UserDAO {
-    private HashSet<Data_User> userDatabase;
+    private HashSet<DataUser> userDatabase;
 
     public MemUserDAO() {
         userDatabase = new HashSet<>();
     }
 
     @Override
-    public Data_User getUser(String username) throws DataAccessException {
+    public DataUser getUser(String username) throws DataAccessException {
         return userDatabase.stream()
                 .filter(user -> user.username().equals(username))
                 .findFirst()
@@ -19,7 +19,7 @@ public class MemUserDAO implements UserDAO {
     }
 
     @Override
-    public void makeUser(Data_User user) throws UserAlreadyExistsException {
+    public void makeUser(DataUser user) throws UserAlreadyExistsException {
         if (userDatabase.stream().anyMatch(existingUser -> existingUser.username().equals(user.username()))) {
             throw new UserAlreadyExistsException("User already exists: " + user.username());
         }
@@ -28,7 +28,7 @@ public class MemUserDAO implements UserDAO {
 
     @Override
     public boolean authUser(String username, String password) throws DataAccessException {
-        Optional<Data_User> user = userDatabase.stream()
+        Optional<DataUser> user = userDatabase.stream()
                 .filter(existingUser -> existingUser.username().equals(username))
                 .findFirst();
 

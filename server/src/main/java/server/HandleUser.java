@@ -4,8 +4,8 @@ import com.google.gson.JsonSyntaxException;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
 import dataaccess.UserAlreadyExistsException;
-import model.Data_Auth;
-import model.Data_User;
+import model.DataAuth;
+import model.DataUser;
 import service.Service_User;
 import spark.Request;
 import spark.Response;
@@ -17,8 +17,8 @@ public class HandleUser {
     public Object registerUser(Request req, Response resp) {
         ErrorModel errorModel = new ErrorModel("");
         try {
-            Data_User userData = new Gson().fromJson(req.body(), Data_User.class);
-            Data_Auth authData = userService.makeUser(userData);
+            DataUser userData = new Gson().fromJson(req.body(), DataUser.class);
+            DataAuth authData = userService.makeUser(userData);
             if (authData == null || userData.password() == null || userData.email() == null) {
                 resp.status(400);
                 errorModel = new ErrorModel("Error: bad request");
@@ -47,8 +47,8 @@ public class HandleUser {
     public Object loginUser(Request req, Response resp) {
         ErrorModel errorModel = new ErrorModel("");
         try {
-            Data_User userData = new Gson().fromJson(req.body(), Data_User.class);
-            Data_Auth authData = userService.loginUser(userData);
+            DataUser userData = new Gson().fromJson(req.body(), DataUser.class);
+            DataAuth authData = userService.loginUser(userData);
             resp.status(200);
             return new Gson().toJson(authData);
         } catch (DataAccessException e) {

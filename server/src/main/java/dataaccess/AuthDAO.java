@@ -1,10 +1,10 @@
 package dataaccess;
 
-import model.Data_Auth;
+import model.DataAuth;
 
 public interface AuthDAO {
-    Data_Auth getAuthentication(String authToken) throws DataAccessException;
-    void addAuthentication(Data_Auth authData);
+    DataAuth getAuthentication(String authToken) throws DataAccessException;
+    void addAuthentication(DataAuth authData);
     void deleteAuthentication(String authToken);
     void clear();
 }

@@ -1,31 +1,31 @@
 package dataaccess;
 
-import model.Data_Game;
+import model.DataGame;
 import java.util.HashSet;
 import java.util.Optional;
 
 public class MemGameDAO implements GameDAO {
-    private HashSet<Data_Game> gameDatabase;
+    private HashSet<DataGame> gameDatabase;
 
     public MemGameDAO() {
         gameDatabase = new HashSet<>();
     }
 
     @Override
-    public HashSet<Data_Game> gamesList() {
+    public HashSet<DataGame> gamesList() {
         return new HashSet<>(gameDatabase); // Return a copy of the game database
     }
 
     @Override
-    public void makeGame(Data_Game game) {
+    public void makeGame(DataGame game) {
         if (!gameDatabase.contains(game)) {
             gameDatabase.add(game);
         }
     }
 
     @Override
-    public Data_Game getGame(int gameID) throws DataAccessException {
-        Optional<Data_Game> foundGame = gameDatabase.stream()
+    public DataGame getGame(int gameID) throws DataAccessException {
+        Optional<DataGame> foundGame = gameDatabase.stream()
                 .filter(game -> game.gameID() == gameID)
                 .findFirst();
 
@@ -43,7 +43,7 @@ public class MemGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(Data_Game game) {
+    public void updateGame(DataGame game) {
         gameDatabase.removeIf(g -> g.gameID() == game.gameID());
         gameDatabase.add(game);
     }

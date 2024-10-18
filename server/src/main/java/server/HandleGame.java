@@ -3,7 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
-import model.Data_Game;
+import model.DataGame;
 import service.ServiceGame;
 import spark.Request;
 import spark.Response;
@@ -18,7 +18,7 @@ public class HandleGame {
         ErrorModel errorModel = new ErrorModel("");
         try {
             String authenticationToken = req.headers("authorization");
-            HashSet<Data_Game> gamesList = gameService.gamesList(authenticationToken);
+            HashSet<DataGame> gamesList = gameService.gamesList(authenticationToken);
 
             resp.status(200);
             return new Gson().toJson(new ResponseWrapper(gamesList));
@@ -33,13 +33,13 @@ public class HandleGame {
     }
 
     private static class ResponseWrapper {
-        private final HashSet<Data_Game> games;
+        private final HashSet<DataGame> games;
 
-        public ResponseWrapper(HashSet<Data_Game> games) {
+        public ResponseWrapper(HashSet<DataGame> games) {
             this.games = games;
         }
 
-        public HashSet<Data_Game> getGames() {
+        public HashSet<DataGame> getGames() {
             return games;
         }
     }
