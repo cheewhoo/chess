@@ -4,11 +4,10 @@ import model.Data_Auth;
 import model.Data_Game;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
-import service.Service_Game;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
-public class Service_Game_tests{
+public class ServiceGameTests{
 
     private static Service_Game servicegame;
     private static Mem_Game_DAO memgame;

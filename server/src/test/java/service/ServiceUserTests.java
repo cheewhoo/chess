@@ -4,7 +4,7 @@ import model.*;
 import org.junit.jupiter.api.*;
 import service.Service_User;
 
-public class Service_User_tests{
+public class ServiceUserTests{
 
     private static Service_User serviceuser;
     private static Mem_User_DAO memuser;
