@@ -103,7 +103,9 @@ public class ChessPiece {
         int[] directions = {-1, 0, 1}; // King can move in any direction by 1 square
         for (int dr : directions) {
             for (int dc : directions) {
-                if (dr == 0 && dc == 0) continue; // Skip the current position
+                if (dr == 0 && dc == 0){
+                    continue; // Skip the current position
+                }
                 int newRow = row + dr;
                 int newCol = col + dc;
                 if (isValidPosition(newRow, newCol) && isEmptyOrEnemy(board, newRow, newCol)) {
@@ -125,7 +127,9 @@ public class ChessPiece {
                 for (int step = 1; ; step++) {
                     int newRow = row + dr * step;
                     int newCol = col + dc * step;
-                    if (!isValidPosition(newRow, newCol)) break;
+                    if (!isValidPosition(newRow, newCol)){
+                        break;
+                    }
                     if (isEmptyOrEnemy(board, newRow, newCol)) {
                         moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
                         if (board.getPiece(new ChessPosition(newRow, newCol)) != null) break; // Stop if there's a piece in the way
@@ -159,10 +163,14 @@ public class ChessPiece {
             for (int step = 1; ; step++) {
                 int newRow = row + dr * step;
                 int newCol = col;
-                if (!isValidPosition(newRow, newCol)) break;
+                if (!isValidPosition(newRow, newCol)){
+                    break;
+                }
                 if (isEmptyOrEnemy(board, newRow, newCol)) {
                     moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
-                    if (board.getPiece(new ChessPosition(newRow, newCol)) != null) break;
+                    if (board.getPiece(new ChessPosition(newRow, newCol)) != null){
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -172,10 +180,14 @@ public class ChessPiece {
             for (int step = 1; ; step++) {
                 int newRow = row;
                 int newCol = col + dc * step;
-                if (!isValidPosition(newRow, newCol)) break;
+                if (!isValidPosition(newRow, newCol)){
+                    break;
+                }
                 if (isEmptyOrEnemy(board, newRow, newCol)) {
                     moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
-                    if (board.getPiece(new ChessPosition(newRow, newCol)) != null) break;
+                    if (board.getPiece(new ChessPosition(newRow, newCol)) != null){
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -235,8 +247,12 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj){
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()){
+            return false;
+        }
         ChessPiece that = (ChessPiece) obj;
         return pieceColor == that.pieceColor && pieceType == that.pieceType;
     }
