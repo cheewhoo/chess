@@ -2,7 +2,6 @@ package service;
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.*;
-import service.Service_User;
 
 public class ServiceUserTests{
 
@@ -31,7 +30,7 @@ public class ServiceUserTests{
     @Test
     void makeuserfails() throws UnauthorizedException, DataAccessException, UserAlreadyExistsException {
         serviceuser.makeUser(user);
-        Assertions.assertThrows(DataAccessException.class, () -> serviceuser.makeUser(user));
+        Assertions.assertThrows(UserAlreadyExistsException.class, () -> serviceuser.makeUser(user));
     }
     @Test
     void loginworks() throws UnauthorizedException, DataAccessException,UserAlreadyExistsException {
