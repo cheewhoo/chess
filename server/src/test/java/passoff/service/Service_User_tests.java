@@ -1,7 +1,6 @@
-package passoff.server;
+package passoff.service;
 import dataaccess.*;
 import model.*;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.*;
 import service.Service_User;
 
