@@ -170,28 +170,40 @@ public class ChessGame {
             System.out.println("Not in check.");
             return false;
         }
+
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
-                Collection<ChessMove> moves = validMoves(position);
                 ChessPiece piece = board.getPiece(position);
-                if (moves != null && !moves.isEmpty() && piece != null && piece.getTeamColor() == teamColor) {
-                    for (ChessMove move : moves) {
-                        board.addPiece(move.getEndPosition(), piece);
-                        board.addPiece(position, null);
-                        if (!isInCheck(teamColor)) {
-                            board.addPiece(position, piece);
-                            board.addPiece(move.getEndPosition(), null);
-                            return false;
-                        }
-                        board.addPiece(position, piece);
-                        board.addPiece(move.getEndPosition(), null);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = validMoves(position);
+                    if (canEscapeCheck(position, piece, moves, teamColor)) {
+                        return false;
                     }
                 }
             }
         }
         return true;
     }
+
+    private boolean canEscapeCheck(ChessPosition position, ChessPiece piece, Collection<ChessMove> moves, TeamColor teamColor) {
+        if (moves == null || moves.isEmpty()) {
+            return false;
+        }
+
+        for (ChessMove move : moves) {
+            board.addPiece(move.getEndPosition(), piece);
+            board.addPiece(position, null);
+            boolean stillInCheck = isInCheck(teamColor);
+            board.addPiece(position, piece);
+            board.addPiece(move.getEndPosition(), null);
+            if (!stillInCheck) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Determines if the given team is in stalemate, which here is defined as having
