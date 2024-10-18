@@ -139,13 +139,20 @@ public class ChessGame {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
-                if (piece != null && piece.getTeamColor() == attacker) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, pos);
-                    for (ChessMove move : moves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
-                    }
+                if (isBeingAttackedBoardLoop(piece, kingPosition, attacker, pos)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isBeingAttackedBoardLoop(ChessPiece piece, ChessPosition kingPosition, TeamColor attacker, ChessPosition pos) {
+        if (piece != null && piece.getTeamColor() == attacker) {
+            Collection<ChessMove> moves = piece.pieceMoves(board, pos);
+            for (ChessMove move : moves) {
+                if (move.getEndPosition().equals(kingPosition)) {
+                    return true;
                 }
             }
         }
