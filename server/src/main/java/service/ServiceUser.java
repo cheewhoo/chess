@@ -7,10 +7,10 @@ import dataaccess.UserDAO;
 import model.DataAuth;
 import model.DataUser;
 import java.util.UUID;
-public class Service_User {
+public class ServiceUser {
     UserDAO userDAO;
     AuthDAO authDAO;
-    public Service_User(UserDAO userDAO, AuthDAO authDAO) {
+    public ServiceUser(UserDAO userDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }

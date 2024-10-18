@@ -1,6 +1,6 @@
 package server;
 import spark.*;
-import service.Service_User;
+import service.ServiceUser;
 import service.ServiceGame;
 import com.google.gson.Gson;
 import dataaccess.*;
@@ -30,7 +30,7 @@ public class Server {
     UserDAO userDAO;
     AuthDAO authDAO;
     GameDAO gameDAO;
-    Service_User serviceuser;
+    ServiceUser serviceuser;
     ServiceGame servicegame;
     HandleUser userHandler;
     HandleGame gameHandler;
@@ -38,7 +38,7 @@ public class Server {
         userDAO = new MemUserDAO();
         authDAO = new MemAuthDAO();
         gameDAO = new MemGameDAO();
-        serviceuser = new Service_User(userDAO, authDAO);
+        serviceuser = new ServiceUser(userDAO, authDAO);
         servicegame = new ServiceGame(gameDAO, authDAO);
         userHandler = new HandleUser(serviceuser);
         gameHandler = new HandleGame(servicegame);

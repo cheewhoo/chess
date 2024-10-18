@@ -6,12 +6,12 @@ import dataaccess.UnauthorizedException;
 import dataaccess.UserAlreadyExistsException;
 import model.DataAuth;
 import model.DataUser;
-import service.Service_User;
+import service.ServiceUser;
 import spark.Request;
 import spark.Response;
 public class HandleUser {
-    private final Service_User userService;
-    public HandleUser(Service_User userService) {
+    private final ServiceUser userService;
+    public HandleUser(ServiceUser userService) {
         this.userService = userService;
     }
     public Object registerUser(Request req, Response resp) {

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.*;
 
 public class ServiceUserTests{
 
-    private static Service_User serviceuser;
+    private static ServiceUser serviceuser;
     private static MemUserDAO memuser;
     private static MemAuthDAO memauth;
     private DataUser user;
@@ -14,7 +14,7 @@ public class ServiceUserTests{
     static void starter() {
         memuser = new MemUserDAO();
         memauth = new MemAuthDAO();
-        serviceuser = new Service_User(memuser, memauth);
+        serviceuser = new ServiceUser(memuser, memauth);
     }
     @BeforeEach
     void setup() {
