@@ -130,16 +130,26 @@ public class ChessPiece {
                     if (!isValidPosition(newRow, newCol)){
                         break;
                     }
-                    if (isEmptyOrEnemy(board, newRow, newCol)) {
-                        moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
-                        if (board.getPiece(new ChessPosition(newRow, newCol)) != null){
-                            break; // Stop if there's a piece in the way
-                        }
-                    } else {
+                    if(!shouldContinueMoves(board, row, col, newRow, newCol, moves)){
                         break;
                     }
                 }
             }
+        }
+    }
+
+    private boolean shouldContinueMoves(ChessBoard board,int row, int col, int newRow, int newCol, Collection<ChessMove> moves){
+        if (isEmptyOrEnemy(board, newRow, newCol)) {
+            moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
+            if (board.getPiece(new ChessPosition(newRow, newCol)) != null){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        else{
+            return false;
         }
     }
 
@@ -168,12 +178,7 @@ public class ChessPiece {
                 if (!isValidPosition(newRow, newCol)){
                     break;
                 }
-                if (isEmptyOrEnemy(board, newRow, newCol)) {
-                    moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
-                    if (board.getPiece(new ChessPosition(newRow, newCol)) != null){
-                        break;
-                    }
-                } else {
+                if(!shouldContinueMoves(board, row, col, newRow, newCol, moves)){
                     break;
                 }
             }
@@ -185,12 +190,7 @@ public class ChessPiece {
                 if (!isValidPosition(newRow, newCol)){
                     break;
                 }
-                if (isEmptyOrEnemy(board, newRow, newCol)) {
-                    moves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(newRow, newCol), null));
-                    if (board.getPiece(new ChessPosition(newRow, newCol)) != null){
-                        break;
-                    }
-                } else {
+                if(!shouldContinueMoves(board, row, col, newRow, newCol, moves)){
                     break;
                 }
             }
