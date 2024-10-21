@@ -62,6 +62,7 @@ public class SQLUser implements UserDAO {
              var statement = conn.prepareStatement(insertSQL)) {
             statement.setString(1, user.username());
             statement.setString(2, user.password());
+            statement.setString(3, user.email());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("User already exists: " + user.username());
