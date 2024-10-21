@@ -1,4 +1,3 @@
-import chess.*;
 import server.Server;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
@@ -16,7 +15,7 @@ import dataaccess.DatabaseManager;
 //}
 
 public class Main{
-    public static void main(String[] args) throws DataAccessException {
+    public static void main(String[] args) {
         try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
             throw new RuntimeException(ex);
         }
