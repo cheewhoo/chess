@@ -37,7 +37,8 @@ public class Server {
     public Server() {
 //        userDAO = new MemUserDAO();
         userDAO = new SQLUser();
-        authDAO = new MemAuthDAO();
+//        authDAO = new MemAuthDAO();
+        authDAO = new SQLAuth();
         gameDAO = new MemGameDAO();
         serviceuser = new ServiceUser(userDAO, authDAO);
         servicegame = new ServiceGame(gameDAO, authDAO);
