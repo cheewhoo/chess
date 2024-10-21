@@ -2,8 +2,12 @@ package dataaccess;
 
 import model.DataUser;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SQLUser implements UserDAO {
+    private static final Logger LOGGER = Logger.getLogger(SQLUser.class.getName());
+
     public SQLUser() {
         initializeUserTable();
     }
@@ -11,9 +15,9 @@ public class SQLUser implements UserDAO {
     private void initializeUserTable() {
         String createTableSQL = """
             CREATE TABLE IF NOT EXISTS user (
-                username VARCHAR(255) NOT NULL,
-                password VARCHAR(255) NOT NULL,
-                email VARCHAR(255),
+                username VARCHAR(50) NOT NULL,
+                password VARCHAR(50) NOT NULL,
+                email VARCHAR(300) NOT NULL,
                 PRIMARY KEY (username)
             )
         """;
@@ -58,7 +62,6 @@ public class SQLUser implements UserDAO {
              var statement = conn.prepareStatement(insertSQL)) {
             statement.setString(1, user.username());
             statement.setString(2, user.password());
-            statement.setString(3, user.email());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("User already exists: " + user.username());
@@ -80,13 +83,13 @@ public class SQLUser implements UserDAO {
             statement.setString(1, username);
             try (var results = statement.executeQuery()) {
                 if (results.next()) {
-                    return results.getInt(1) > 0; // Return true if count > 0
+                    return results.getInt(1) > 0;
                 }
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error checking user existence: " + username);
         }
-        return false; // User does not exist
+        return false;
     }
 
     @Override
@@ -97,7 +100,7 @@ public class SQLUser implements UserDAO {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            // Log the exception if needed, but suppress it to maintain the method contract
+            LOGGER.log(Level.WARNING, "Failed to clear user table", e);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }

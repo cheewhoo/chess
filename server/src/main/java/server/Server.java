@@ -35,7 +35,8 @@ public class Server {
     HandleUser userHandler;
     HandleGame gameHandler;
     public Server() {
-        userDAO = new MemUserDAO();
+//        userDAO = new MemUserDAO();
+        userDAO = new SQLUser();
         authDAO = new MemAuthDAO();
         gameDAO = new MemGameDAO();
         serviceuser = new ServiceUser(userDAO, authDAO);
