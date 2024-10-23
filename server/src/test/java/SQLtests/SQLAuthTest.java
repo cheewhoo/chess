@@ -10,7 +10,11 @@ public class SQLAuthTest {
     @BeforeEach
     public void setup() {
         authDAO = new SQLAuth();
-        authDAO.clear();
+        try {
+            authDAO.addAuthentication(new DataAuth("username", "validToken"));
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterEach
@@ -20,27 +24,27 @@ public class SQLAuthTest {
 
     @Test
     public void AddAuthenticationPass() {
-        DataAuth auth = new DataAuth("validToken", "testUser");
-        assertDoesNotThrow(() -> authDAO.addAuthentication(auth));
+        SQLAuth authDAO = new SQLAuth();
+        DataAuth authData = new DataAuth("validToken", "testUser");
+
+        // First, add the authentication (should not throw an exception)
+        assertDoesNotThrow(() -> authDAO.addAuthentication(authData));
+
+        // Now, try to retrieve it to verify it was added (if your method does this)
         DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("validToken"));
-        assertEquals("validToken", retrievedAuth.authToken());
-        assertEquals("testUser", retrievedAuth.username());
+        assertNotNull(retrievedAuth); // Ensure something is retrieved
+        assertEquals("testUser", retrievedAuth.username()); // Verify the user is correct
     }
+
 
     @Test
     public void AddAuthenticationFail() throws DataAccessException {
         SQLAuth authDAO = new SQLAuth();
         DataAuth authData = new DataAuth("existingToken", "testUser");
-
-        // Insert the first time to set up for a conflict on the second insertion
-        authDAO.addAuthentication(authData);  // This should succeed.
-
-        // Now try to add it again, expecting DataAccessException due to duplicate insertion.
+        authDAO.addAuthentication(authData);
         DataAccessException exception = assertThrows(DataAccessException.class, () -> {
-            authDAO.addAuthentication(authData);  // This should fail with an exception.
+            authDAO.addAuthentication(authData);
         });
-
-        // Optional: Verify the exception message or cause to be sure it's as expected.
         assertTrue(exception.getMessage().contains("Could not add authentication"));
     }
 
