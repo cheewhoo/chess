@@ -112,21 +112,25 @@ public class SQLGame implements GameDAO {
     @Override
     public void updateGame(DataGame game) {
         String updateSQL = """
-            UPDATE game
-            SET whiteUsername = ?, blackUsername = ?, gameName = ?, chessGame = ?
-            WHERE gameID = ?
-        """;
+        UPDATE game
+        SET whiteUsername = ?, blackUsername = ?, gameName = ?, chessGame = ?
+        WHERE gameID = ?
+    """;
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
-            fillStatement(stmt, game);
+            stmt.setString(1, game.whiteUsername());
+            stmt.setString(2, game.blackUsername());
+            stmt.setString(3, game.gameName());
+            stmt.setString(4, game.game() != null ? game.game().toString() : null);
             stmt.setInt(5, game.gameID());
             stmt.executeUpdate();
         } catch (SQLException | DataAccessException e) {
             // Silent failure
         }
     }
+
 
     @Override
     public void clear() {
