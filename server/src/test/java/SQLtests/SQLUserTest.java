@@ -5,9 +5,7 @@ import model.DataUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.sql.SQLException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class SQLUserTest {
@@ -69,13 +67,13 @@ class SQLUserTest {
     }
 
     @Test
-    void ThrowExceptionForNonExistentUser() {
+    void NonExistentUser() {
         assertThrows(DataAccessException.class, () -> userDAO.getUser("unknownUser"),
                 "Retrieving a non-existent user should throw a DataAccessException.");
     }
 
     @Test
-    void AuthenticateWithValidCredentials() throws DataAccessException, UserAlreadyExistsException {
+    void AuthValidCredentials() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
         boolean isAuthenticated = userDAO.authUser(validUser.username(), validUser.password());
 
@@ -83,7 +81,7 @@ class SQLUserTest {
     }
 
     @Test
-    void FailAuthenticationWithInvalidPassword() throws DataAccessException, UserAlreadyExistsException {
+    void FailAuthInvalidPassword() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
         boolean isAuthenticated = userDAO.authUser(validUser.username(), "wrongPassword");
 
