@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.DataAuth;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,23 +10,22 @@ import java.sql.SQLException;
 public class SQLAuth implements AuthDAO {
 
     public SQLAuth() {
-        initializeAuthTable();
+        setupAuthTable();
     }
 
-    private void initializeAuthTable() {
-        String createTableSQL = """
+    private void setupAuthTable() {
+        String createTableQuery = """
             CREATE TABLE IF NOT EXISTS auth (
-                authToken VARCHAR(50) NOT NULL,
-                username VARCHAR(50) NOT NULL,
-                PRIMARY KEY (authToken)
+                authToken VARCHAR(50) NOT NULL PRIMARY KEY,
+                username VARCHAR(50) NOT NULL
             )
         """;
 
-        try (var conn = DatabaseManager.getConnection();
-             var createTableStatement = conn.prepareStatement(createTableSQL)) {
-            createTableStatement.executeUpdate();
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(createTableQuery)) {
+            statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to initialize auth table: " + e.getMessage(), e);
+            throw new RuntimeException("Error setting up the auth table: " + e.getMessage(), e);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -33,66 +33,69 @@ public class SQLAuth implements AuthDAO {
 
     @Override
     public DataAuth getAuthentication(String authToken) throws DataAccessException {
-        String querySQL = "SELECT authToken, username FROM auth WHERE authToken = ?";
-        try (var conn = DatabaseManager.getConnection();
-             var statement = conn.prepareStatement(querySQL)) {
+        String query = "SELECT username FROM auth WHERE authToken = ?";
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, authToken);
-            try (var results = statement.executeQuery()) {
-                if (results.next()) {
-                    String username = results.getString("username");
-                    return new DataAuth(authToken, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new DataAuth(authToken, resultSet.getString("username"));
                 } else {
-                    throw new DataAccessException("Authentication not found for token: " + authToken);
+                    throw new DataAccessException("No authentication found for token: " + authToken);
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Error retrieving authentication: " + authToken);
+            throw new DataAccessException("Failed to retrieve authentication for token: " + authToken);
         }
     }
 
     @Override
     public void addAuthentication(DataAuth authData) {
-        String insertSQL = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
-        try (var conn = DatabaseManager.getConnection();
-             var statement = conn.prepareStatement(insertSQL)) {
+        String insertQuery = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(insertQuery)) {
 
             statement.setString(1, authData.authToken());
             statement.setString(2, authData.username());
             statement.executeUpdate();
-        } catch (SQLException | DataAccessException e) {
+        } catch (SQLException e) {
             try {
-                throw new DataAccessException("Failed to add authentication: " + authData.authToken());
+                throw new DataAccessException("Could not add authentication: " + authData.authToken());
             } catch (DataAccessException ex) {
                 throw new RuntimeException(ex);
             }
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void deleteAuthentication(String authToken) {
-        String deleteSQL = "DELETE FROM auth WHERE authToken = ?";
-        try (var conn = DatabaseManager.getConnection();
-             var statement = conn.prepareStatement(deleteSQL)) {
+        String deleteQuery = "DELETE FROM auth WHERE authToken = ?";
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
 
             statement.setString(1, authToken);
             statement.executeUpdate();
-        } catch (SQLException | DataAccessException e) {
+        } catch (SQLException e) {
             try {
-                throw new DataAccessException("Failed to delete authentication: " + authToken);
+                throw new DataAccessException("Could not delete authentication for token: " + authToken);
             } catch (DataAccessException ex) {
                 throw new RuntimeException(ex);
             }
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void clear() {
-        String truncateSQL = "TRUNCATE auth";
-        try (var conn = DatabaseManager.getConnection();
-             var statement = conn.prepareStatement(truncateSQL)) {
+        String truncateQuery = "TRUNCATE TABLE auth";
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(truncateQuery)) {
 
-            statement.executeUpdate();
+            statement.execute();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to clear authentication data: " + e.getMessage(), e);
         } catch (DataAccessException e) {
