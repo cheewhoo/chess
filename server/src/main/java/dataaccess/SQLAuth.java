@@ -13,7 +13,7 @@ public class SQLAuth implements AuthDAO {
         setupAuthTable();
     }
 
-    private void setupAuthTable() {
+    public void setupAuthTable() {
         String createTableQuery = """
             CREATE TABLE IF NOT EXISTS auth (
                 authToken VARCHAR(50) NOT NULL PRIMARY KEY,

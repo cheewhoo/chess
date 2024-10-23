@@ -10,6 +10,7 @@ public class SQLAuthTest {
     @BeforeEach
     public void setup() {
         authDAO = new SQLAuth();
+        authDAO.setupAuthTable();
         try {
             authDAO.addAuthentication(new DataAuth("username", "validToken"));
         } catch (DataAccessException e) {
