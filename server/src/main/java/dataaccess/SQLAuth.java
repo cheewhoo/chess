@@ -50,25 +50,19 @@ public class SQLAuth implements AuthDAO {
         }
     }
 
-    @Override
-    public void addAuthentication(DataAuth authData) {
-        String insertQuery = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
-        try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(insertQuery)) {
-
-            statement.setString(1, authData.authToken());
-            statement.setString(2, authData.username());
-            statement.executeUpdate();
+    public void addAuthentication(DataAuth auth) throws DataAccessException {
+        String sql = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, auth.authToken());
+            stmt.setString(2, auth.username());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            try {
-                throw new DataAccessException("Could not add authentication: " + authData.authToken());
-            } catch (DataAccessException ex) {
-                throw new RuntimeException(ex);
-            }
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            // Wrap the SQLException in DataAccessException
+            throw new DataAccessException("Could not add authentication");
         }
     }
+
 
     @Override
     public void deleteAuthentication(String authToken) {
