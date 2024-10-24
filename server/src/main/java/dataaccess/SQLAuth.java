@@ -90,8 +90,8 @@ public class SQLAuth implements AuthDAO {
              PreparedStatement statement = connection.prepareStatement(truncateQuery)) {
             statement.execute();
         } catch (SQLException e) {
-            if (e.getMessage().contains("doesn't exist")) {
-                System.err.println("Warning: Attempted to clear a non-existent 'auth' table.");
+            if (e.getMessage().toLowerCase().contains("doesn't exist")) {
+                System.out.println("Table 'auth' doesn't exist, nothing to clear.");
             } else {
                 throw new RuntimeException("Failed to clear authentication data: " + e.getMessage(), e);
             }
@@ -99,5 +99,6 @@ public class SQLAuth implements AuthDAO {
             throw new RuntimeException(e);
         }
     }
+
 
 }
