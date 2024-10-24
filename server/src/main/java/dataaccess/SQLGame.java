@@ -82,10 +82,8 @@ public class SQLGame implements GameDAO {
             INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame)
             VALUES (?, ?, ?, ?, ?)
         """;
-
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(insertSQL)) {
-
             fillStatement(stmt, game);
             stmt.executeUpdate();
         } catch (SQLException | DataAccessException e) {

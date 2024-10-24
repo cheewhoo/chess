@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.DataUser;
+import org.mindrot.jbcrypt.BCrypt;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,13 +56,14 @@ public class SQLUser implements UserDAO {
         }
     }
 
-    @Override
+
     public void makeUser(DataUser user) throws DataAccessException {
+        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
         String insertSQL = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         try (var conn = DatabaseManager.getConnection();
              var statement = conn.prepareStatement(insertSQL)) {
             statement.setString(1, user.username());
-            statement.setString(2, user.password());
+            statement.setString(2, hashedPassword);
             statement.setString(3, user.email());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -69,11 +71,13 @@ public class SQLUser implements UserDAO {
         }
     }
 
+
     @Override
     public boolean authUser(String username, String password) throws DataAccessException {
         DataUser user = getUser(username);
-        return user.password().equals(password);
+        return BCrypt.checkpw(password, user.password());
     }
+
 
     @Override
     public boolean userExists(String username) throws DataAccessException {
