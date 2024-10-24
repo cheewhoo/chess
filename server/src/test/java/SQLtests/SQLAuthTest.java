@@ -54,7 +54,7 @@ public class SQLAuthTest {
     public void GetAuthenticationPass() throws DataAccessException {
         DataAuth auth = new DataAuth("passToken", "passUser");
         authDAO.addAuthentication(auth);
-        DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("passToken"));
+        DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("passUser"));
         assertEquals("passToken", retrievedAuth.authToken());
         assertEquals("passUser", retrievedAuth.username());
     }
