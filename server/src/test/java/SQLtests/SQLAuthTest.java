@@ -32,7 +32,7 @@ public class SQLAuthTest {
         assertDoesNotThrow(() -> authDAO.addAuthentication(authData));
 
         // Now, try to retrieve it to verify it was added (if your method does this)
-        DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("validToken"));
+        DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("testUser"));
         assertNotNull(retrievedAuth); // Ensure something is retrieved
         assertEquals("testUser", retrievedAuth.username()); // Verify the user is correct
     }
