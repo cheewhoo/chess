@@ -27,14 +27,10 @@ public class SQLAuthTest {
     public void AddAuthenticationPass() {
         SQLAuth authDAO = new SQLAuth();
         DataAuth authData = new DataAuth("validToken", "testUser");
-
-        // First, add the authentication (should not throw an exception)
         assertDoesNotThrow(() -> authDAO.addAuthentication(authData));
-
-        // Now, try to retrieve it to verify it was added (if your method does this)
         DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("testUser"));
         assertNotNull(retrievedAuth); // Ensure something is retrieved
-        assertEquals("testUser", retrievedAuth.username()); // Verify the user is correct
+        assertEquals("testUser", retrievedAuth.username());
     }
 
 

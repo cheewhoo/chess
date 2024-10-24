@@ -58,7 +58,6 @@ public class SQLAuth implements AuthDAO {
             stmt.setString(2, auth.username());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            // Wrap the SQLException in DataAccessException
             throw new DataAccessException("Could not add authentication");
         }
     }

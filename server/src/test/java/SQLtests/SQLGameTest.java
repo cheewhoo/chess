@@ -31,7 +31,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void MakeGameFailsWithDuplicateGameID() {
+    public void MakeGameFails() {
         DataGame game1 = new DataGame(1, "whitePlayer1", "blackPlayer1", "Match1", new ChessGame());
         DataGame game2 = new DataGame(1, "whitePlayer2", "blackPlayer2", "Match2", new ChessGame());
         gameDAO.makeGame(game1);
@@ -92,7 +92,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void GamesListFailsWithEmptyDatabase() {
+    public void GamesListFails() {
         HashSet<DataGame> games = gameDAO.gamesList();
         assertNotNull(games, "Games list should not be null.");
         assertTrue(games.isEmpty(), "Games list should be empty when no games are present.");

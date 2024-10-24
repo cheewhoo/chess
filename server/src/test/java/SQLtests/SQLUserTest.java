@@ -36,7 +36,7 @@ class SQLUserTest {
     }
 
     @Test
-    void AddNewUserSuccessful() throws DataAccessException, UserAlreadyExistsException {
+    void MakeUserSuccessful() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
         DataUser userFromDB = userDAO.getUser(validUser.username());
 
@@ -49,17 +49,19 @@ class SQLUserTest {
     }
 
     @Test
-    void FailAddingDuplicateUser() throws DataAccessException, UserAlreadyExistsException {
+    void FailMakingDuplicateUser() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
-        assertThrows(DataAccessException.class, () -> userDAO.makeUser(duplicateUser),
-                "Adding a duplicate user should throw a DataAccessException.");
+        assertThrows(DataAccessException.class, () -> {
+            if (userDAO.userExists(validUser.username())) {
+                userDAO.makeUser(duplicateUser);
+            }
+        }, "Adding a duplicate user should throw a DataAccessException.");
     }
 
     @Test
-    void RetrieveExistingUser() throws DataAccessException, UserAlreadyExistsException {
+    void ExistingUserWorks() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);  // Insert the user
         DataUser retrieved = userDAO.getUser(validUser.username());
-
         assertEquals(validUser.username(), retrieved.username(),
                 "The username should match the retrieved user.");
         assertEquals(validUser.email(), retrieved.email(),
@@ -91,7 +93,7 @@ class SQLUserTest {
 
     @Test
     void ConfirmUserExists() throws DataAccessException, UserAlreadyExistsException {
-        userDAO.makeUser(validUser);  // Insert the user
+        userDAO.makeUser(validUser);
         assertTrue(userDAO.userExists(validUser.username()),
                 "UserExists should return true for an existing user.");
     }
@@ -104,8 +106,8 @@ class SQLUserTest {
 
     @Test
     void ClearUserTableSuccessful() throws DataAccessException, SQLException, UserAlreadyExistsException {
-        userDAO.makeUser(validUser);  // Insert the user
-        userDAO.clear();  // Clear the table
+        userDAO.makeUser(validUser);
+        userDAO.clear();
 
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement("SELECT * FROM user WHERE username=?")) {
