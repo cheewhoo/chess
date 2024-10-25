@@ -29,19 +29,23 @@ public class ServiceGame {
         return gameDAO.gamesList();
     }
     public int makeGame(String authToken, String gameName) throws UnauthorizedException, DataAccessException {
+        DataAuth authData;
         try {
-            authDAO.getAuthentication(authToken);
+            authData = authDAO.getAuthentication(authToken);
         } catch (DataAccessException e) {
             throw new UnauthorizedException("Invalid authToken");
         }
-        int newgameID;
+        String username = authData.username();
+        int newGameID;
         do {
-            newgameID = ThreadLocalRandom.current().nextInt(1, 10000);
-        } while (gameDAO.gameExists(newgameID));
-
-        gameDAO.makeGame(new DataGame(newgameID, null, null, gameName, null));
-        return newgameID;
+            newGameID = ThreadLocalRandom.current().nextInt(1, 10000);
+        } while (gameDAO.gameExists(newGameID));
+        DataGame newGame = new DataGame(newGameID, username, null, gameName, null);
+        gameDAO.makeGame(newGame);
+        return newGameID;
     }
+
+
     public int joinGame(String authToken, int gameID, String color) throws UnauthorizedException, DataAccessException {
         DataGame gameData;
         DataAuth authData;

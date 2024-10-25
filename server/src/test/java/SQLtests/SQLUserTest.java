@@ -5,6 +5,8 @@ import model.DataUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,16 +39,21 @@ class SQLUserTest {
 
     @Test
     void MakeUserSuccessful() throws DataAccessException, UserAlreadyExistsException {
+        // Create the user
         userDAO.makeUser(validUser);
+
+        // Retrieve the user from the database
         DataUser userFromDB = userDAO.getUser(validUser.username());
 
+        // Validate the retrieved data
         assertEquals(validUser.username(), userFromDB.username(),
                 "The username should match the inserted user.");
-        assertEquals(validUser.password(), userFromDB.password(),
+        assertTrue(BCrypt.checkpw(validUser.password(), userFromDB.password()),
                 "The password should match the inserted user.");
         assertEquals(validUser.email(), userFromDB.email(),
                 "The email should match the inserted user.");
     }
+
 
     @Test
     void FailMakingDuplicateUser() throws DataAccessException, UserAlreadyExistsException {
