@@ -28,7 +28,7 @@ public class ServiceGame {
         }
         return gameDAO.gamesList();
     }
-    public int makeGame(String authToken) throws UnauthorizedException, DataAccessException {
+    public int makeGame(String authToken, String gameName) throws UnauthorizedException, DataAccessException {
         try {
             authDAO.getAuthentication(authToken);
         } catch (DataAccessException e) {
@@ -39,7 +39,7 @@ public class ServiceGame {
             newgameID = ThreadLocalRandom.current().nextInt(1, 10000);
         } while (gameDAO.gameExists(newgameID));
 
-        gameDAO.makeGame(new DataGame(newgameID, null, null, null, null));
+        gameDAO.makeGame(new DataGame(newgameID, null, null, gameName, null));
         return newgameID;
     }
     public int joinGame(String authToken, int gameID, String color) throws UnauthorizedException, DataAccessException {

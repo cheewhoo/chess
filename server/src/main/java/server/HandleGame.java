@@ -52,8 +52,9 @@ public class HandleGame {
             return new Gson().toJson(errorModel);
         }
         try {
+            DataGame datagame = new Gson().fromJson(req.body(), DataGame.class);
             String authToken = req.headers("authorization");
-            int newgameID =  gameService.makeGame(authToken);
+            int newgameID =  gameService.makeGame(authToken, datagame.gameName());
             resp.status(200);
             return "{ \"gameID\": " + newgameID + " }";
         } catch (UnauthorizedException e) {
