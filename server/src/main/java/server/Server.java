@@ -34,9 +34,13 @@ public class Server {
     ServiceGame servicegame;
     HandleUser userHandler;
     HandleGame gameHandler;
-    public Server() {
+    public Server(){
 //        userDAO = new MemUserDAO();
-        userDAO = new SQLUser();
+        try {
+            userDAO = new SQLUser();
+        } catch (DataAccessException ignored) {
+        }
+        ;
 //        authDAO = new MemAuthDAO();
         authDAO = new SQLAuth();
 //        gameDAO = new MemGameDAO();

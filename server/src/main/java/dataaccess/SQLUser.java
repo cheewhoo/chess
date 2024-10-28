@@ -9,11 +9,11 @@ import java.util.logging.Logger;
 public class SQLUser implements UserDAO {
     private static final Logger LOGGER = Logger.getLogger(SQLUser.class.getName());
 
-    public SQLUser() {
+    public SQLUser() throws DataAccessException {
         initializeUserTable();
     }
 
-    private void initializeUserTable() {
+    private void initializeUserTable() throws DataAccessException{
         String createTableSQL = """
             CREATE TABLE IF NOT EXISTS user (
                 username VARCHAR(50) NOT NULL,
@@ -31,9 +31,8 @@ public class SQLUser implements UserDAO {
 
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to initialize user table: " + e.getMessage(), e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
+
         }
     }
 
