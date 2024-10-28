@@ -1,4 +1,4 @@
-package SQLtests;
+package dataaccess.SQLtests;
 import dataaccess.*;
 import model.DataAuth;
 import org.junit.jupiter.api.*;
