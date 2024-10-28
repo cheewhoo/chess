@@ -40,7 +40,7 @@ public class ServiceGame {
         do {
             newGameID = ThreadLocalRandom.current().nextInt(1, 10000);
         } while (gameDAO.gameExists(newGameID));
-        DataGame newGame = new DataGame(newGameID, username, null, gameName, null);
+        DataGame newGame = new DataGame(newGameID, null, null, gameName, null);
         gameDAO.makeGame(newGame);
         return newGameID;
     }
