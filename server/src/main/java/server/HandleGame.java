@@ -28,7 +28,7 @@ public class HandleGame {
             return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
-            return "{ \"Error\": \"" + e.getMessage() + "\" }";
+            return "{ \"message\": \"Error: \"" + e.getMessage() + "\" }";
         }
     }
 
@@ -63,7 +63,7 @@ public class HandleGame {
             return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
-            return "{ \"error\": \"" + e.getMessage() + "\" }";
+            return "{ \"message\": \"Error: \"" + e.getMessage() + "\" }";
         }
     }
     public Object joinExisitngGame(Request req, Response resp) {
@@ -105,7 +105,7 @@ public class HandleGame {
             return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
-            return "{ \"error\": \"" + e.getMessage() + "\" }";
+            return "{ \"message\": \"Error: \"" + e.getMessage() + "\" }";
         }
     }
 
