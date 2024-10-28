@@ -36,7 +36,8 @@ public class HandleUser {
             return new Gson().toJson(errorModel);
         } catch (DataAccessException e) {
             resp.status(500);
-            return "{ \"message\": \"Error: \"" + e.getMessage() + "\" }";
+            errorModel = new ErrorModel("Error: " + e.getMessage());
+            return new Gson().toJson(errorModel);
         } catch (UnauthorizedException e) {
             resp.status(400);
             errorModel = new ErrorModel("Error: " + e.getMessage());
@@ -57,7 +58,8 @@ public class HandleUser {
             return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
-            return "{ \"message\": \"Error: \"" + e.getMessage() + "\" }";
+            errorModel = new ErrorModel("Error: " + e.getMessage());
+            return new Gson().toJson(errorModel);
         }
     }
     public Object logoutUser(Request req, Response resp) {
@@ -73,7 +75,8 @@ public class HandleUser {
             return new Gson().toJson(errorModel);
         } catch (Exception e) {
             resp.status(500);
-            return "{ \"message\": \"Error: \"" + e.getMessage() + "\" }";
+            errorModel = new ErrorModel("Error: " + e.getMessage());
+            return new Gson().toJson(errorModel);
         }
     }
 }

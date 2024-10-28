@@ -66,7 +66,8 @@ public class Server {
         }
         catch (Exception e) {
             resp.status(500);
-            return "{ \"message\": \"Error: %s\"}".formatted(new Gson().toJson(e.getMessage()));
+            ErrorModel errorModel = new ErrorModel("Error: " + e.getMessage());
+            return new Gson().toJson(errorModel);
         }
     }
 }
