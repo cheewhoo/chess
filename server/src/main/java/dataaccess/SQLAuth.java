@@ -40,7 +40,7 @@ public class SQLAuth implements AuthDAO {
             statement.setString(1, authToken);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new DataAuth(authToken, resultSet.getString("username"));
+                    return new DataAuth(resultSet.getString("username"), authToken);
                 } else {
                     throw new DataAccessException("No authentication found for token: " + authToken);
                 }
@@ -51,11 +51,11 @@ public class SQLAuth implements AuthDAO {
     }
 
     public void addAuthentication(DataAuth auth) throws DataAccessException {
-        String sql = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+        String sql = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, auth.authToken());
-            stmt.setString(2, auth.username());
+            stmt.setString(1, auth.username());
+            stmt.setString(2, auth.authToken());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Could not add authentication");

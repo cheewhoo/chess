@@ -46,9 +46,10 @@ public class SQLUser implements UserDAO {
             statement.setString(1, username);
             try (var results = statement.executeQuery()) {
                 if (results.next()) {
+                    String user = results.getString("username");
                     String password = results.getString("password");
                     String email = results.getString("email");
-                    return new DataUser(username, password, email);
+                    return new DataUser(user, password, email);
                 } else {
                     throw new DataAccessException("User not found: " + username);
                 }
