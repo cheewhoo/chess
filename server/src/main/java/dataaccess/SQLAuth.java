@@ -9,11 +9,11 @@ import java.sql.SQLException;
 
 public class SQLAuth implements AuthDAO {
 
-    public SQLAuth() {
+    public SQLAuth() throws DataAccessException{
         setupAuthTable();
     }
 
-    public void setupAuthTable() {
+    public void setupAuthTable() throws DataAccessException{
         String createTableQuery = """
             CREATE TABLE IF NOT EXISTS auth (
                 authToken VARCHAR(50) NOT NULL PRIMARY KEY,
@@ -25,9 +25,7 @@ public class SQLAuth implements AuthDAO {
              PreparedStatement statement = connection.prepareStatement(createTableQuery)) {
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException("Error setting up the auth table: " + e.getMessage(), e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 

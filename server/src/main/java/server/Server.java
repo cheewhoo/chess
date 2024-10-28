@@ -42,7 +42,11 @@ public class Server {
         }
         ;
 //        authDAO = new MemAuthDAO();
-        authDAO = new SQLAuth();
+        try{
+            authDAO = new SQLAuth();
+        } catch (DataAccessException ignored){
+
+        }
 //        gameDAO = new MemGameDAO();
         gameDAO = new SQLGame();
         serviceuser = new ServiceUser(userDAO, authDAO);

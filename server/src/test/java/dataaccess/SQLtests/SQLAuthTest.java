@@ -8,7 +8,7 @@ public class SQLAuthTest {
     private SQLAuth authDAO;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws DataAccessException {
         authDAO = new SQLAuth();
         authDAO.setupAuthTable();
         try {
@@ -24,7 +24,7 @@ public class SQLAuthTest {
     }
 
     @Test
-    public void AddAuthenticationPass(){
+    public void AddAuthenticationPass() throws DataAccessException {
         SQLAuth authDAO = new SQLAuth();
         DataAuth authData = new DataAuth("testUser", "validToken");
 //        assertDoesNotThrow(() -> authDAO.addAuthentication(authData));
