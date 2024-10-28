@@ -38,19 +38,22 @@ public class Server {
 //        userDAO = new MemUserDAO();
         try {
             userDAO = new SQLUser();
-        } catch (DataAccessException ignored) {
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
         }
-        ;
 //        authDAO = new MemAuthDAO();
         try{
             authDAO = new SQLAuth();
-        } catch (DataAccessException ignored){
+        } catch (DataAccessException e){
+            throw new RuntimeException(e.getMessage());
 
         }
 //        gameDAO = new MemGameDAO();
         try{
             gameDAO = new SQLGame();
-        } catch (DataAccessException ignored){}
+        } catch (DataAccessException e){
+            throw new RuntimeException(e.getMessage());
+        }
         serviceuser = new ServiceUser(userDAO, authDAO);
         servicegame = new ServiceGame(gameDAO, authDAO);
         userHandler = new HandleUser(serviceuser);
