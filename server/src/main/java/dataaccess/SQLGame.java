@@ -29,7 +29,7 @@ public class SQLGame implements GameDAO {
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
-            conn.setCatalog("chess");
+//            conn.setCatalog("chess");
             stmt.execute();
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException("Error setting up game table", e);

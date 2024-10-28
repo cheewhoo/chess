@@ -25,7 +25,7 @@ public class SQLUser implements UserDAO {
 
 
         try (var conn = DatabaseManager.getConnection()) {
-            conn.setCatalog("chess");
+//            conn.setCatalog("chess");
             try (var createTableStatement = conn.prepareStatement(createTableSQL)) {
                 createTableStatement.executeUpdate();
 
