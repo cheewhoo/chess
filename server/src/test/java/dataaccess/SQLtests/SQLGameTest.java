@@ -13,7 +13,7 @@ public class SQLGameTest {
     private SQLGame gameDAO;
 
     @BeforeAll
-    public void setup() {
+    public void setup() throws DataAccessException {
         gameDAO = new SQLGame();
     }
 

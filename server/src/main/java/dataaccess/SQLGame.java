@@ -12,11 +12,11 @@ import java.util.HashSet;
 
 public class SQLGame implements GameDAO {
 
-    public SQLGame() {
+    public SQLGame() throws DataAccessException{
         initializeDatabase();
     }
 
-    private void initializeDatabase() {
+    private void initializeDatabase() throws DataAccessException{
         String createTableSQL = """
             CREATE TABLE IF NOT EXISTS game (
                 gameID INT PRIMARY KEY,
@@ -31,8 +31,8 @@ public class SQLGame implements GameDAO {
              PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
 //            conn.setCatalog("chess");
             stmt.execute();
-        } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException("Error setting up game table", e);
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 
