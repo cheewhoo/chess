@@ -54,8 +54,8 @@ public class ServiceGameTests{
         int firstGame = servicegame.makeGame(authToken, "gamename");
         int secondGame = servicegame.makeGame(authToken, "gamename");
         HashSet<DataGame> expectedGameList = new LinkedHashSet<>();
-        expectedGameList.add(new DataGame(firstGame, "Username", null, "gamename", null));
-        expectedGameList.add(new DataGame(secondGame, "Username", null, "gamename", null));
+        expectedGameList.add(new DataGame(firstGame, null, null, "gamename", null));
+        expectedGameList.add(new DataGame(secondGame, null, null, "gamename", null));
         HashSet<DataGame> actualGameList = servicegame.gamesList(authToken);
         Assertions.assertEquals(expectedGameList, actualGameList);
     }

@@ -24,13 +24,13 @@ public class SQLAuthTest {
     }
 
     @Test
-    public void AddAuthenticationPass() {
+    public void AddAuthenticationPass(){
         SQLAuth authDAO = new SQLAuth();
-        DataAuth authData = new DataAuth("validToken", "testUser");
+        DataAuth authData = new DataAuth("testUser", "validToken");
         assertDoesNotThrow(() -> authDAO.addAuthentication(authData));
-        DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("testUser"));
+        DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("validToken"));
         assertNotNull(retrievedAuth); // Ensure something is retrieved
-        assertEquals("testUser", retrievedAuth.username());
+        assertEquals(retrievedAuth.username(),"testUser");
     }
 
 
@@ -48,9 +48,9 @@ public class SQLAuthTest {
 
     @Test
     public void GetAuthenticationPass() throws DataAccessException {
-        DataAuth auth = new DataAuth("passToken", "passUser");
+        DataAuth auth = new DataAuth("passUser", "passToken");
         authDAO.addAuthentication(auth);
-        DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("passUser"));
+        DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("passToken"));
         assertEquals("passToken", retrievedAuth.authToken());
         assertEquals("passUser", retrievedAuth.username());
     }
