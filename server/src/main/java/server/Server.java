@@ -36,6 +36,9 @@ public class Server {
     HandleGame gameHandler;
     public Server(){
 //        userDAO = new MemUserDAO();
+        try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
+            throw new RuntimeException(ex);
+        }
         try {
             userDAO = new SQLUser();
         } catch (DataAccessException e) {
