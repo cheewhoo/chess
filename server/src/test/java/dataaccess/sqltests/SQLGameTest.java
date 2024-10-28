@@ -1,4 +1,4 @@
-package dataaccess.SQLtests;
+package dataaccess.sqltests;
 import dataaccess.*;
 import chess.ChessGame;
 import model.DataGame;
@@ -23,7 +23,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void MakeGameWorks() {
+    public void makeGameWorks() {
         DataGame game = new DataGame(1, "whitePlayer", "blackPlayer", "Epic Match", new ChessGame());
         gameDAO.makeGame(game);
 
@@ -31,7 +31,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void MakeGameFails() {
+    public void makeGameFails() {
         DataGame game1 = new DataGame(1, "whitePlayer1", "blackPlayer1", "Match1", new ChessGame());
         DataGame game2 = new DataGame(1, "whitePlayer2", "blackPlayer2", "Match2", new ChessGame());
         gameDAO.makeGame(game1);
@@ -46,7 +46,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void GameExistsWorks() {
+    public void gameExistsWorks() {
         DataGame game = new DataGame(2, "white", "black", "TestGame", new ChessGame());
         gameDAO.makeGame(game);
 
@@ -54,12 +54,12 @@ public class SQLGameTest {
     }
 
     @Test
-    public void GameExistsFails() {
+    public void gameExistsFails() {
         assertFalse(gameDAO.gameExists(999), "Game with non-existent ID should not exist.");
     }
 
     @Test
-    public void GetGameWorks() {
+    public void getGameWorks() {
         DataGame game = new DataGame(3, "whiteUser", "blackUser", "FunGame", new ChessGame());
         gameDAO.makeGame(game);
         DataGame fetchedGame = null;
@@ -73,7 +73,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void GetGameFails() {
+    public void getGameFails() {
         DataGame fetchedGame = null;
         try {
             fetchedGame = gameDAO.getGame(999);
@@ -84,7 +84,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void GamesListWorks() {
+    public void gamesListWorks() {
         gameDAO.makeGame(new DataGame(1, "white1", "black1", "Game1", new ChessGame()));
         gameDAO.makeGame(new DataGame(2, "white2", "black2", "Game2", new ChessGame()));
         HashSet<DataGame> games = gameDAO.gamesList();
@@ -92,14 +92,14 @@ public class SQLGameTest {
     }
 
     @Test
-    public void GamesListFails() {
+    public void gamesListFails() {
         HashSet<DataGame> games = gameDAO.gamesList();
         assertNotNull(games, "Games list should not be null.");
         assertTrue(games.isEmpty(), "Games list should be empty when no games are present.");
     }
 
     @Test
-    public void UpdateGameWorks() {
+    public void updateGameWorks() {
         DataGame game = new DataGame(4, "whiteUser", "blackUser", "InitialGame", new ChessGame());
         gameDAO.makeGame(game);
 
@@ -116,7 +116,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void UpdateGameFailsWithNonExistentGame() {
+    public void updateGameFailsWithNonExistentGame() {
         DataGame game = new DataGame(5, "nonWhite", "nonBlack", "NonExistent", new ChessGame());
         gameDAO.updateGame(game);
 
@@ -128,7 +128,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void ClearWorks() {
+    public void clearWorks() {
         gameDAO.makeGame(new DataGame(1, "white1", "black1", "Game1", new ChessGame()));
         gameDAO.makeGame(new DataGame(2, "white2", "black2", "Game2", new ChessGame()));
 
@@ -137,7 +137,7 @@ public class SQLGameTest {
     }
 
     @Test
-    public void ClearNFails() {
+    public void clearFails() {
         gameDAO.clear();
         assertTrue(gameDAO.gamesList().isEmpty(), "Clear should work even if no games are present.");
     }

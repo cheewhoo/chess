@@ -1,4 +1,4 @@
-package dataaccess.SQLtests;
+package dataaccess.sqltests;
 import dataaccess.*;
 import model.DataAuth;
 import org.junit.jupiter.api.*;
@@ -24,7 +24,7 @@ public class SQLAuthTest {
     }
 
     @Test
-    public void AddAuthenticationPass() throws DataAccessException {
+    public void addAuthenticationPass() throws DataAccessException {
         SQLAuth authDAO = new SQLAuth();
         DataAuth authData = new DataAuth("testUser", "validToken");
 //        assertDoesNotThrow(() -> authDAO.addAuthentication(authData));
@@ -35,7 +35,7 @@ public class SQLAuthTest {
 
 
     @Test
-    public void AddAuthenticationFail() throws DataAccessException {
+    public void addAuthenticationFail() throws DataAccessException {
         SQLAuth authDAO = new SQLAuth();
         DataAuth authData = new DataAuth("existingToken", "testUser");
         authDAO.addAuthentication(authData);
@@ -47,7 +47,7 @@ public class SQLAuthTest {
 
 
     @Test
-    public void GetAuthenticationPass() throws DataAccessException {
+    public void getAuthenticationPass() throws DataAccessException {
         DataAuth auth = new DataAuth("passUser", "passToken");
         authDAO.addAuthentication(auth);
         DataAuth retrievedAuth = assertDoesNotThrow(() -> authDAO.getAuthentication("passToken"));
@@ -57,7 +57,7 @@ public class SQLAuthTest {
 
 
     @Test
-    public void GetAuthenticationFail() {
+    public void getAuthenticationFail() {
         DataAccessException exception = assertThrows(
                 DataAccessException.class,
                 () -> authDAO.getAuthentication("invalidToken")
@@ -67,7 +67,7 @@ public class SQLAuthTest {
     }
 
     @Test
-    public void DeleteAuthenticationPass() throws DataAccessException {
+    public void deleteAuthenticationPass() throws DataAccessException {
         DataAuth auth = new DataAuth("deleteToken", "testUser");
         authDAO.addAuthentication(auth);
         assertDoesNotThrow(() -> authDAO.deleteAuthentication("deleteToken"));
@@ -75,14 +75,14 @@ public class SQLAuthTest {
     }
 
     @Test
-    public void DeleteAuthenticationFail() {
+    public void deleteAuthenticationFail() {
         assertDoesNotThrow(() -> authDAO.deleteAuthentication("nonExistentToken"));
     }
 
 
 
     @Test
-    public void ClearPass() throws DataAccessException {
+    public void clearPass() throws DataAccessException {
         authDAO.addAuthentication(new DataAuth("token1", "user1"));
         authDAO.addAuthentication(new DataAuth("token2", "user2"));
         assertDoesNotThrow(() -> authDAO.clear());
@@ -91,7 +91,7 @@ public class SQLAuthTest {
     }
 
     @Test
-    public void ClearFail() {
+    public void clearFail() {
         try (var connection = DatabaseManager.getConnection();
              var statement = connection.prepareStatement("DROP TABLE IF EXISTS auth")) {
             statement.execute();

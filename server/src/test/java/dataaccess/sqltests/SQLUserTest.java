@@ -1,4 +1,4 @@
-package dataaccess.SQLtests;
+package dataaccess.sqltests;
 
 import dataaccess.*;
 import model.DataUser;
@@ -38,7 +38,7 @@ class SQLUserTest {
     }
 
     @Test
-    void MakeUserSuccessful() throws DataAccessException, UserAlreadyExistsException {
+    void makeUserSuccessful() throws DataAccessException, UserAlreadyExistsException {
         // Create the user
         userDAO.makeUser(validUser);
 
@@ -56,7 +56,7 @@ class SQLUserTest {
 
 
     @Test
-    void FailMakingDuplicateUser() throws DataAccessException, UserAlreadyExistsException {
+    void failMakingDuplicateUser() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
         assertThrows(DataAccessException.class, () -> {
             if (userDAO.userExists(validUser.username())) {
@@ -66,7 +66,7 @@ class SQLUserTest {
     }
 
     @Test
-    void ExistingUserWorks() throws DataAccessException, UserAlreadyExistsException {
+    void existingUserWorks() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);  // Insert the user
         DataUser retrieved = userDAO.getUser(validUser.username());
         assertEquals(validUser.username(), retrieved.username(),
@@ -76,13 +76,13 @@ class SQLUserTest {
     }
 
     @Test
-    void NonExistentUser() {
+    void nonExistentUser() {
         assertThrows(DataAccessException.class, () -> userDAO.getUser("unknownUser"),
                 "Retrieving a non-existent user should throw a DataAccessException.");
     }
 
     @Test
-    void AuthValidCredentials() throws DataAccessException, UserAlreadyExistsException {
+    void authValidCredentials() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
         boolean isAuthenticated = userDAO.authUser(validUser.username(), validUser.password());
 
@@ -90,7 +90,7 @@ class SQLUserTest {
     }
 
     @Test
-    void FailAuthInvalidPassword() throws DataAccessException, UserAlreadyExistsException {
+    void failAuthInvalidPassword() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
         boolean isAuthenticated = userDAO.authUser(validUser.username(), "wrongPassword");
 
@@ -99,20 +99,20 @@ class SQLUserTest {
 
 
     @Test
-    void ConfirmUserExists() throws DataAccessException, UserAlreadyExistsException {
+    void confirmUserExists() throws DataAccessException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
         assertTrue(userDAO.userExists(validUser.username()),
                 "UserExists should return true for an existing user.");
     }
 
     @Test
-    void ReturnFalseForNonExistentUser() throws DataAccessException {
+    void returnFalseForNonExistentUser() throws DataAccessException {
         assertFalse(userDAO.userExists("nonExistentUser"),
                 "UserExists should return false for a non-existent user.");
     }
 
     @Test
-    void ClearUserTableSuccessful() throws DataAccessException, SQLException, UserAlreadyExistsException {
+    void clearUserTableSuccessful() throws DataAccessException, SQLException, UserAlreadyExistsException {
         userDAO.makeUser(validUser);
         userDAO.clear();
 

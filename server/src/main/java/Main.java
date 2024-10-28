@@ -1,6 +1,4 @@
 import server.Server;
-import dataaccess.DataAccessException;
-import dataaccess.DatabaseManager;
 
 public class Main{
     public static void main(String[] args) {
