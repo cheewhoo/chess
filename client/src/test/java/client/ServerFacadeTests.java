@@ -67,7 +67,7 @@ public class ServerFacadeTests {
         Map<String, Object> response = serverFacade.login("testUser2", "wrongPassword");
         assertNotNull(response);
         assertTrue(response.containsKey("Error"));
-        assertEquals("Invalid credentials", response.get("Error"));
+        assertEquals("Unauthorized", response.get("Error"));
     }
 
     @Test

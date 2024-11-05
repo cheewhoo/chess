@@ -62,15 +62,22 @@ public class ServerFacade {
                 return Map.of("Error", "Unauthorized");
             }
 
+            if (http.getResponseCode() != 200) {
+                return Map.of("Error", "Unexpected response code: " + http.getResponseCode());
+            }
+
             try (InputStream respBody = http.getInputStream()) {
                 responseMap = new Gson().fromJson(new InputStreamReader(respBody), Map.class);
             }
 
-        } catch (URISyntaxException | IOException e) {
-            return Map.of("Error", e.getMessage());
+        } catch (URISyntaxException e) {
+            return Map.of("Error", "Invalid URI: " + e.getMessage());
+        } catch (IOException e) {
+            return Map.of("Error", "Connection issue: " + e.getMessage()); // More specific error message
         }
         return responseMap;
     }
+
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
