@@ -20,9 +20,12 @@ public class PersonalFacadeTest {
     @DisplayName("Register: Successful Registration")
     public void testRegister_Success() {
         Map<String, Object> response = serverFacade.register("newUser", "validPassword", "email@example.com");
+        System.out.println("Response: " + response); // Debug line to check response structure
         assertNotNull(response);
-        assertTrue(response.containsKey("success") && (boolean) response.get("success"));
+        assertTrue(response.containsKey("success") && (boolean) response.get("success"),
+                "Expected response to contain success:true, but got: " + response);
     }
+
 
     @Test
     @Order(2)
