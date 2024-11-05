@@ -14,7 +14,7 @@ public class ServerFacade {
     private String authToken;
 
     public ServerFacade(String baseURL) {
-        this.baseURL = baseURL;
+        this.baseURL = "http://localhost:8080";
     }
 
     public Map<String, Object> register(String username, String password, String email) {

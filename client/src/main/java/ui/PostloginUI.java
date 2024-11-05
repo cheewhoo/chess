@@ -26,7 +26,7 @@ public class PostloginUI {
         switch (choice) {
             case 1 -> displayHelp();
             case 2 -> {
-                return !handleLogout(); // Return false to transition to Prelogin if logged out
+                return !handleLogout();
             }
             case 3 -> handleCreateGame();
             case 4 -> handleListGames();

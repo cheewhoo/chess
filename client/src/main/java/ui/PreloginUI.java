@@ -26,7 +26,7 @@ public class PreloginUI {
             case 1 -> displayHelp();
             case 2 -> handleRegister();
             case 3 -> {
-                return handleLogin(); // Return true if login is successful
+                return handleLogin();
             }
             case 4 -> quit();
             default -> System.out.println("Invalid choice. Try again.");

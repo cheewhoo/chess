@@ -1,9 +1,8 @@
-import chess.*;
 import ui.*;
 import java.util.Scanner;
 
 public class Main {
-    private static ServerFacade serverFacade = new ServerFacade();
+    private static ServerFacade serverFacade = new ServerFacade("http://localhost:8080");
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
