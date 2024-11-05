@@ -1,6 +1,7 @@
 package ui;
 
 
+import java.util.Map;
 import java.util.Scanner;
 
 public class PreloginUI {
@@ -53,11 +54,11 @@ public class PreloginUI {
         System.out.print("Enter email: ");
         String email = scanner.nextLine();
 
-        boolean success = serverFacade.register(username, password, email);
-        if (success) {
+        Map<String, Object> response = serverFacade.register(username, password, email);
+        if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Registration successful. Please login.");
         } else {
-            System.out.println("Registration failed.");
+            System.out.println("Registration failed: " + response.get("error"));
         }
     }
 
@@ -67,13 +68,14 @@ public class PreloginUI {
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        boolean success = serverFacade.login(username, password);
-        if (success) {
+        Map<String, Object> response = serverFacade.login(username, password);
+        if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Login successful. Welcome, " + username + "!");
+            return true;
         } else {
-            System.out.println("Login failed. Please check your credentials.");
+            System.out.println("Login failed: " + response.get("error"));
+            return false;
         }
-        return success;
     }
 
     private void quit() {
