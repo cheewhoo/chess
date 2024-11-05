@@ -17,6 +17,7 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
+        serverFacade = new ServerFacade("http://localhost:" + port);
     }
 
     @AfterAll
@@ -32,7 +33,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(1)
-    @DisplayName("Register: Successful Registration")
     public void testRegister_Success() {
         Map<String, Object> response = serverFacade.register("newUser", "validPassword", "email@example.com");
         System.out.println("Response: " + response);
@@ -43,7 +43,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(2)
-    @DisplayName("Register: User Already Exists")
     public void testRegister_UserAlreadyExists() {
         serverFacade.register("existingUser", "validPassword", "email@example.com");
         Map<String, Object> response = serverFacade.register("existingUser", "anotherPassword", "email@example.com");
@@ -54,7 +53,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(3)
-    @DisplayName("Login: Successful Login")
     public void testLogin_Success() {
         serverFacade.register("testUser", "password123", "test@example.com");
         Map<String, Object> response = serverFacade.login("testUser", "password123");
@@ -64,7 +62,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(4)
-    @DisplayName("Login: Incorrect Password")
     public void testLogin_IncorrectPassword() {
         serverFacade.register("testUser2", "password123", "test2@example.com");
         Map<String, Object> response = serverFacade.login("testUser2", "wrongPassword");
@@ -75,7 +72,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(5)
-    @DisplayName("Logout: Successful Logout")
     public void testLogout_Success() {
         serverFacade.register("logoutUser", "password123", "logout@example.com");
         serverFacade.login("logoutUser", "password123");
@@ -86,7 +82,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(6)
-    @DisplayName("Logout: No Auth Token Provided")
     public void testLogout_NoAuthToken() {
         serverFacade.setAuthToken(null);
         Map<String, Object> response = serverFacade.logout();
@@ -97,7 +92,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(7)
-    @DisplayName("Create Game: Successful Game Creation")
     public void testCreateGame_Success() {
         serverFacade.register("gameCreator", "password123", "game@example.com");
         serverFacade.login("gameCreator", "password123");
@@ -108,7 +102,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(8)
-    @DisplayName("Create Game: No Auth Token Provided")
     public void testCreateGame_NoAuthToken() {
         serverFacade.setAuthToken(null);
         Map<String, Object> response = serverFacade.createGame("Chess Game 2");
@@ -119,7 +112,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(9)
-    @DisplayName("List Games: Successfully Retrieve List")
     public void testListGames_Success() {
         serverFacade.register("listUser", "password123", "list@example.com");
         serverFacade.login("listUser", "password123");
@@ -133,7 +125,6 @@ public class ServerFacadeTests {
 
     @Test
     @Order(10)
-    @DisplayName("List Games: No Auth Token Provided")
     public void testListGames_NoAuthToken() {
         serverFacade.setAuthToken(null);
         Map<String, Object> response = serverFacade.listGames();
