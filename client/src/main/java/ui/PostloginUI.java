@@ -1,5 +1,7 @@
 package ui;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class PostloginUI {
@@ -48,37 +50,40 @@ public class PostloginUI {
     }
 
     private boolean handleLogout() {
-        if (serverFacade.logout()) {
-            System.out.println("Logged out successfully.");
-            return true;
-        } else {
-            System.out.println("Logout failed.");
-            return false;
-        }
+        Map<String, Object> response = serverFacade.logout();
+        return response.containsKey("success") && (boolean) response.get("success");
     }
 
     private void handleCreateGame() {
         System.out.print("Enter game name: ");
         String gameName = scanner.nextLine();
 
-        int gameID = serverFacade.createGame(gameName);
-        if (gameID != -1) {
-            System.out.println("Game created successfully with ID: " + gameID);
+        Map<String, Object> response = serverFacade.createGame(gameName);
+        if (response.containsKey("success") && (boolean) response.get("success")) {
+            System.out.println("Game created successfully: " + gameName);
         } else {
-            System.out.println("Failed to create game.");
+            System.out.println("Game creation failed: " + response.get("error"));
         }
     }
 
     private void handleListGames() {
-        System.out.println("Listing games...");
-        var games = serverFacade.listGames();
-        if (games.isEmpty()) {
-            System.out.println("No games found.");
-        } else {
-            int index = 1;
-            for (var game : games) {
-                System.out.println(index++ + ". " + game);
+        Map<String, Object> response = serverFacade.listGames();
+
+        if (response.containsKey("games")) {
+            // Cast the 'games' entry to a list of maps
+            var games = (List<Map<String, Object>>) response.get("games");
+
+            System.out.println("Available games:");
+            int index = 1; // for numbering the games
+            for (Map<String, Object> game : games) {
+                String gameName = (String) game.get("name");
+                String players = (String) game.get("players"); // assuming 'players' is a summary string
+
+                System.out.println(index + ": " + gameName + " - Players: " + players);
+                index++;
             }
+        } else {
+            System.out.println("Failed to retrieve games list: " + response.get("error"));
         }
     }
 
