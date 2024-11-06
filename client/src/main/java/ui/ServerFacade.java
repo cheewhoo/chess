@@ -67,6 +67,10 @@ public class ServerFacade {
                 return Map.of("Error", "Unauthorized");
             }
 
+            if (http.getResponseCode() == 403) {
+                return Map.of("Error", "User already exists");
+            }
+
             if (http.getResponseCode() != 200) {
                 return Map.of("Error", "Unexpected response code: " + http.getResponseCode());
             }
