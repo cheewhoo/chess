@@ -53,12 +53,19 @@ public class ServerFacadeTests {
 
     @Test
     @Order(3)
+    @DisplayName("Login: Successful Login")
     public void testLogin_Success() {
         serverFacade.register("testUser", "password123", "test@example.com");
         Map<String, Object> response = serverFacade.login("testUser", "password123");
-        assertNotNull(response);
-        assertTrue(response.containsKey("success") && (boolean) response.get("success"));
+
+        assertNotNull(response, "Response should not be null");
+        assertTrue(response.containsKey("authToken"),
+                "Expected response to contain authToken for successful login, but got: " + response);
+        String authToken = (String) response.get("authToken");
+        assertNotNull(authToken, "Auth token should not be null");
+        assertFalse(authToken.isEmpty(), "Auth token should not be empty");
     }
+
 
     @Test
     @Order(4)
