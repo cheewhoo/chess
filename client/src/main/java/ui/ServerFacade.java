@@ -22,8 +22,13 @@ public class ServerFacade {
     }
 
     public Map<String, Object> login(String username, String password) {
-        return sendRequest("POST", "/session", Map.of("username", username, "password", password));
+        Map<String, Object> response = sendRequest("POST", "/session", Map.of("username", username, "password", password));
+        if (response.containsKey("authToken")) {
+            setAuthToken((String) response.get("authToken"));
+        }
+        return response;
     }
+
 
     public Map<String, Object> logout() {
         return sendRequest("DELETE", "/session", null);
@@ -68,6 +73,7 @@ public class ServerFacade {
 
             try (InputStream respBody = http.getInputStream()) {
                 responseMap = new Gson().fromJson(new InputStreamReader(respBody), Map.class);
+                System.out.println("Response map: " + responseMap);
             }
 
         } catch (URISyntaxException e) {

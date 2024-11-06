@@ -92,13 +92,17 @@ public class ServerFacadeTests {
 
     @Test
     @Order(7)
+    @DisplayName("Create Game: Successful Game Creation")
     public void testCreateGame_Success() {
+        // Register and login to get an auth token
         serverFacade.register("gameCreator", "password123", "game@example.com");
         serverFacade.login("gameCreator", "password123");
         Map<String, Object> response = serverFacade.createGame("Chess Game 1");
-        assertNotNull(response);
-        assertTrue(response.containsKey("success") && (boolean) response.get("success"));
+        assertNotNull(response, "Response should not be null");
+        assertTrue(response.containsKey("gameID"), "Expected response to contain gameID, but got: " + response);
+        System.out.println("Create Game Response: " + response);
     }
+
 
     @Test
     @Order(8)
