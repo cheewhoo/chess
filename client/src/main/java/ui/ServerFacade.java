@@ -18,8 +18,13 @@ public class ServerFacade {
     }
 
     public Map<String, Object> register(String username, String password, String email) {
-        return sendRequest("POST", "/user", Map.of("username", username, "password", password, "email", email));
+        Map<String, Object> response = sendRequest("POST", "/user", Map.of("username", username, "password", password, "email", email));
+        if (response.containsKey("Error")) {
+            return Map.of("error", response.get("Error"));
+        }
+        return Map.of("success", true);
     }
+
 
     public Map<String, Object> login(String username, String password) {
         Map<String, Object> response = sendRequest("POST", "/session", Map.of("username", username, "password", password));
