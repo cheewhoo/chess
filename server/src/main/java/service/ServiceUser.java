@@ -8,8 +8,8 @@ import model.DataAuth;
 import model.DataUser;
 import java.util.UUID;
 public class ServiceUser {
-    UserDAO userDAO;
-    AuthDAO authDAO;
+    static UserDAO userDAO;
+    static AuthDAO authDAO;
     public ServiceUser(UserDAO userDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
@@ -43,7 +43,7 @@ public class ServiceUser {
         authDAO.getAuthentication(authToken);
         authDAO.deleteAuthentication(authToken);
     }
-    public void clearUsers() {
+    public static void clearUsers() {
         userDAO.clear();
         authDAO.clear();
     }

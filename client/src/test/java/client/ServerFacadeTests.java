@@ -20,6 +20,11 @@ public class ServerFacadeTests {
         serverFacade = new ServerFacade("http://localhost:" + port);
     }
 
+    @AfterEach
+    void cleanup() {
+        server.clearDatabase();
+    }
+
     @AfterAll
     static void stopServer() {
         server.stop();
@@ -36,10 +41,11 @@ public class ServerFacadeTests {
     public void testRegister_Success() {
         Map<String, Object> response = serverFacade.register("newUser", "validPassword", "email@example.com");
         System.out.println("Response: " + response);
-        assertNotNull(response);
-        assertTrue(response.containsKey("success") && (boolean) response.get("success"),
-                "Expected response to contain success:true, but got: " + response);
+        assertNotNull(response, "Response should not be null");
+        assertTrue(response.containsKey("username"), "Expected response to contain 'username', but got: " + response);
+        assertTrue(response.containsKey("authToken"), "Expected response to contain 'authToken', but got: " + response);
     }
+
 
     @Test
     @Order(2)

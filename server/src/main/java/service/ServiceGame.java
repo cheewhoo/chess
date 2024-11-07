@@ -11,13 +11,13 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ServiceGame {
-    GameDAO gameDAO;
+    static GameDAO gameDAO;
     AuthDAO authDAO;
     public ServiceGame(GameDAO gameDAO, AuthDAO authDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }
-    public void clearGames() {
+    public static void clearGames() {
         gameDAO.clear();
     }
     public HashSet<DataGame> gamesList(String authToken) throws UnauthorizedException {

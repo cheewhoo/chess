@@ -76,4 +76,9 @@ public class Server {
             return new Gson().toJson(errorModel);
         }
     }
+
+    public void clearDatabase() {
+        ServiceUser.clearUsers();
+        ServiceGame.clearGames();
+    }
 }
