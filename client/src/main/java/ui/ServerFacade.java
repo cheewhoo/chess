@@ -27,12 +27,24 @@ public class ServerFacade {
 
 
     public Map<String, Object> login(String username, String password) {
+        // Attempt to login with provided credentials
         Map<String, Object> response = sendRequest("POST", "/session", Map.of("username", username, "password", password));
+
+        // Check if the response contains the authToken (successful login)
         if (response.containsKey("authToken")) {
             setAuthToken((String) response.get("authToken"));
+            return Map.of("success", true); // Return success message for successful login
         }
-        return response;
+
+        // If login failed, provide an error message with details
+        if (response.containsKey("Error")) {
+            return Map.of("error", response.get("Error")); // Specific error message from the server
+        }
+
+        // Return a generic error message if no specific error info is available
+        return Map.of("error", "Login failed: Unexpected response from server");
     }
+
 
 
     public Map<String, Object> logout() {
