@@ -49,6 +49,7 @@ public class PostloginUI {
         System.out.println(" - Logout: Log out of your account.");
         System.out.println(" - Create Game: Start a new chess game.");
         System.out.println(" - List Games: View available games.");
+        System.out.println(" - Play Game: Join a chess game.");
         System.out.println(" - Quit: Exit the program.");
     }
 
@@ -87,22 +88,27 @@ public class PostloginUI {
         }
     }
 
-    private void handlePlayGame() {
-        System.out.print("Enter game ID to join: ");
-        int gameId = Integer.parseInt(scanner.nextLine());
+    public void handlePlayGame() {
+        System.out.print("Enter game name to join: ");
+        String gameName = scanner.nextLine().trim();
 
-        System.out.print("Choose color (white/black): ");
-        String color = scanner.nextLine().toLowerCase();
+        System.out.print("Enter player color (black/white): ");
+        String playerColor = scanner.nextLine().trim().toLowerCase();
 
-        Map<String, Object> response = serverFacade.joinGame(gameId, color);
+        if (!playerColor.equals("black") && !playerColor.equals("white")) {
+            System.out.println("Invalid color choice. Please enter 'black' or 'white'.");
+            return;
+        }
 
+        Map<String, Object> response = serverFacade.joinGame(gameName, playerColor);
         if (response.containsKey("success") && (boolean) response.get("success")) {
-            System.out.println("Joined game successfully as " + color + "!");
-            ChessBoardRenderer.drawBoard();
+            System.out.println("Successfully joined game " + gameName + " as " + playerColor + ".");
         } else {
             System.out.println("Failed to join game: " + response.get("error"));
         }
     }
+
+
 
 
     private void quit () {

@@ -104,7 +104,7 @@ public class ServerFacade {
         return responseMap;
     }
 
-    public Map<String, Object> joinGame(int gameID, String playerColor) {
+    public Map<String, Object> joinGame(String gameID, String playerColor) {
         if (playerColor == null || (!playerColor.equalsIgnoreCase("white") && !playerColor.equalsIgnoreCase("black"))) {
             return Map.of("error", "Invalid color specified. Choose 'white' or 'black'.");
         }
