@@ -65,14 +65,15 @@ public class ServerFacadeTests {
     public void testLogin_Success() {
         serverFacade.register("testUser", "password123", "test@example.com");
         Map<String, Object> response = serverFacade.login("testUser", "password123");
-
         assertNotNull(response, "Response should not be null");
-        assertTrue(response.containsKey("authToken"),
-                "Expected authToken for successful login, but got: " + response);
-        String authToken = (String) response.get("authToken");
+        assertTrue(response.containsKey("success"),
+                "Expected 'success' key in the response, but got: " + response);
+        assertEquals(true, response.get("success"), "Login should be successful");
+        String authToken = serverFacade.getAuthToken();
         assertNotNull(authToken, "Auth token should not be null");
         assertFalse(authToken.isEmpty(), "Auth token should not be empty");
     }
+
 
 
     @Test
@@ -129,7 +130,7 @@ public class ServerFacadeTests {
         Map<String, Object> response = serverFacade.createGame("Chess Game 2");
         assertNotNull(response);
         assertTrue(response.containsKey("Error"));
-        assertEquals("Unauthorized", response.get("Error"));
+        assertEquals("Unauthorized", response.get("error"));
     }
 
     @Test

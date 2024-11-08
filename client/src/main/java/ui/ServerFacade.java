@@ -117,4 +117,7 @@ public class ServerFacade {
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
+    public String getAuthToken() {
+        return authToken;
+    }
 }
