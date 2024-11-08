@@ -65,11 +65,9 @@ public class ServerFacade {
             URI uri = new URI(baseURL + endpoint);
             HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
             http.setRequestMethod(method);
-
             if (authToken != null) {
                 http.addRequestProperty("authorization", authToken);
             }
-
             if (body != null) {
                 http.setDoOutput(true);
                 http.addRequestProperty("Content-Type", "application/json");
@@ -77,25 +75,19 @@ public class ServerFacade {
                     outputStream.write(new Gson().toJson(body).getBytes());
                 }
             }
-
             http.connect();
-
             if (http.getResponseCode() == 401) {
                 return Map.of("Error", "Unauthorized");
             }
-
             if (http.getResponseCode() == 403) {
                 return Map.of("Error", "User already exists");
             }
-
             if (http.getResponseCode() != 200) {
                 return Map.of("Error", "Unexpected response code: " + http.getResponseCode());
             }
-
             try (InputStream respBody = http.getInputStream()) {
                 responseMap = new Gson().fromJson(new InputStreamReader(respBody), Map.class);
             }
-
         } catch (URISyntaxException e) {
             return Map.of("Error", "Invalid URI: " + e.getMessage());
         } catch (IOException e) {

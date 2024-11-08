@@ -69,7 +69,7 @@ public class HandleGame {
             return new Gson().toJson(errorModel);
         }
     }
-    public Object joinExisitngGame(Request req, Response resp) {
+    public Object joinExistingGame(Request req, Response resp) {
         ErrorModel errorModel = new ErrorModel("");
         if (!req.body().contains("\"gameID\":")) {
             resp.status(400);
