@@ -72,21 +72,27 @@ public class PostloginUI {
 
     private void handleListGames() {
         Map<String, Object> response = serverFacade.listGames();
-
         if (response.containsKey("games")) {
-            ListedGames = (List<Map<String, Object>>) response.get("games");
-            System.out.println("Available games:");
-            int index = 1;
-            for (Map<String, Object> game : ListedGames) {
-                String gameName = (String) game.get("name");
-                String players = (String) game.get("players");
-                System.out.println(index + ": " + gameName + " - Players: " + players);
-                index++;
+            List<Map<String, Object>> listedGames = (List<Map<String, Object>>) response.get("games");
+            if (listedGames != null && !listedGames.isEmpty()) {
+                System.out.println("Available games:");
+                int index = 1;
+                for (Map<String, Object> game : listedGames) {
+                    String gameName = (String) game.getOrDefault("gameName", "Unnamed Game");
+                    Map<String, Object> gameData = (Map<String, Object>) game.get("game");
+                    String currentTeam = gameData != null ? (String) gameData.getOrDefault("currentTeam", "Unknown Team") : "Unknown Team";
+                    System.out.println(index + ": " + gameName + " - Current team: " + currentTeam);
+                    index++;
+                }
+            } else {
+                System.out.println("No available games found.");
             }
         } else {
-            System.out.println("Failed to retrieve games list: " + response.get("error"));
+            System.out.println("Failed to retrieve games list: " + response.getOrDefault("error", "Unknown error"));
         }
     }
+
+
 
     public void handlePlayGame() {
         System.out.print("Enter game name to join: ");
