@@ -100,9 +100,10 @@ public class ServerFacade {
         if (playerColor == null || (!playerColor.equalsIgnoreCase("white") && !playerColor.equalsIgnoreCase("black"))) {
             return Map.of("error", "Invalid color specified. Choose 'white' or 'black'.");
         }
-        Map<String, Object> response = sendRequest("POST", "/game", Map.of("gameID", gameID, "playerColor", playerColor.toLowerCase()));
-        if (response.containsKey("Error")) {
-            return Map.of("error", "Server error: " + response.get("Error"));
+        Map<String, String> requestBody = Map.of("gameID", gameID, "playerColor", playerColor.toLowerCase());
+        Map<String, Object> response = sendRequest("PUT", "/game", requestBody);
+        if (response.containsKey("error")) {
+            return Map.of("error", "Server error: " + response.get("error"));
         }
         if (response.isEmpty()) {
             return Map.of("success", true);
@@ -110,6 +111,7 @@ public class ServerFacade {
 
         return response;
     }
+
 
 
 
