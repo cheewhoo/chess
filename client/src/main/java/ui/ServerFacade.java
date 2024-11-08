@@ -27,21 +27,14 @@ public class ServerFacade {
 
 
     public Map<String, Object> login(String username, String password) {
-        // Attempt to login with provided credentials
         Map<String, Object> response = sendRequest("POST", "/session", Map.of("username", username, "password", password));
-
-        // Check if the response contains the authToken (successful login)
         if (response.containsKey("authToken")) {
             setAuthToken((String) response.get("authToken"));
-            return Map.of("success", true); // Return success message for successful login
+            return Map.of("success", true);
         }
-
-        // If login failed, provide an error message with details
         if (response.containsKey("Error")) {
-            return Map.of("error", response.get("Error")); // Specific error message from the server
+            return Map.of("error", response.get("Error"));
         }
-
-        // Return a generic error message if no specific error info is available
         return Map.of("error", "Login failed: Unexpected response from server");
     }
 
@@ -54,12 +47,10 @@ public class ServerFacade {
     public Map<String, Object> createGame(String gameName) {
         Map<String, Object> response = sendRequest("POST", "/game", Map.of("gameName", gameName));
 
-        // Check for success
         if (response.containsKey("success") && (boolean) response.get("success")) {
             return Map.of("success", true);
         }
 
-        // Return specific error message if available, or a default error
         return Map.of("error", response.getOrDefault("Error", "Game creation failed: Server error or unknown issue"));
     }
 
@@ -112,6 +103,22 @@ public class ServerFacade {
         }
         return responseMap;
     }
+
+    public Map<String, Object> joinGame(int gameID, String playerColor) {
+        if (playerColor == null || (!playerColor.equalsIgnoreCase("white") && !playerColor.equalsIgnoreCase("black"))) {
+            return Map.of("error", "Invalid color specified. Choose 'white' or 'black'.");
+        }
+        Map<String, Object> response = sendRequest("POST", "/game/join", Map.of("gameID", String.valueOf(gameID), "playerColor", playerColor.toLowerCase()));
+        if (response.containsKey("error")) {
+            return Map.of("error", response.get("error"));
+        }
+        if (response.isEmpty()) {
+            return Map.of("success", true);
+        }
+        return response;
+    }
+
+
 
 
     public void setAuthToken(String authToken) {

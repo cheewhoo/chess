@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class PostloginUI {
     private final ServerFacade serverFacade;
     private final Scanner scanner;
+    private List<Map<String, Object>> ListedGames;
 
     public PostloginUI(ServerFacade serverFacade, Scanner scanner) {
         this.serverFacade = serverFacade;
@@ -19,7 +20,8 @@ public class PostloginUI {
         System.out.println("2. Logout");
         System.out.println("3. Create Game");
         System.out.println("4. List Games");
-        System.out.println("5. Quit");
+        System.out.println("5. Play Game");
+        System.out.println("6. Quit");
 
         int choice = getUserChoice();
 
@@ -30,7 +32,8 @@ public class PostloginUI {
             }
             case 3 -> handleCreateGame();
             case 4 -> handleListGames();
-            case 5 -> quit();
+            case 5 -> handlePlayGame();
+            case 6 -> quit();
             default -> System.out.println("Invalid choice. Try again.");
         }
         return true;
@@ -70,15 +73,12 @@ public class PostloginUI {
         Map<String, Object> response = serverFacade.listGames();
 
         if (response.containsKey("games")) {
-            // Cast the 'games' entry to a list of maps
-            var games = (List<Map<String, Object>>) response.get("games");
-
+            ListedGames = (List<Map<String, Object>>) response.get("games");
             System.out.println("Available games:");
-            int index = 1; // for numbering the games
-            for (Map<String, Object> game : games) {
+            int index = 1;
+            for (Map<String, Object> game : ListedGames) {
                 String gameName = (String) game.get("name");
-                String players = (String) game.get("players"); // assuming 'players' is a summary string
-
+                String players = (String) game.get("players");
                 System.out.println(index + ": " + gameName + " - Players: " + players);
                 index++;
             }
@@ -87,8 +87,26 @@ public class PostloginUI {
         }
     }
 
-    private void quit() {
-        System.out.println("Exiting Chess Client. Goodbye!");
-        System.exit(0);
+    private void handlePlayGame() {
+        System.out.print("Enter game ID to join: ");
+        int gameId = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Choose color (white/black): ");
+        String color = scanner.nextLine().toLowerCase();
+
+        Map<String, Object> response = serverFacade.joinGame(gameId, color);
+
+        if (response.containsKey("success") && (boolean) response.get("success")) {
+            System.out.println("Joined game successfully as " + color + "!");
+            ChessBoardRenderer.drawBoard();
+        } else {
+            System.out.println("Failed to join game: " + response.get("error"));
+        }
     }
-}
+
+
+    private void quit () {
+            System.out.println("Exiting Chess Client. Goodbye!");
+            System.exit(0);
+        }
+    }
