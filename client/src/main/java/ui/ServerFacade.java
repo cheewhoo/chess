@@ -108,15 +108,18 @@ public class ServerFacade {
         if (playerColor == null || (!playerColor.equalsIgnoreCase("white") && !playerColor.equalsIgnoreCase("black"))) {
             return Map.of("error", "Invalid color specified. Choose 'white' or 'black'.");
         }
-        Map<String, Object> response = sendRequest("POST", "/game/join", Map.of("gameID", String.valueOf(gameID), "playerColor", playerColor.toLowerCase()));
-        if (response.containsKey("error")) {
-            return Map.of("error", response.get("error"));
+        Map<String, Object> response = sendRequest("POST", "/game/join", Map.of("gameID", gameID, "playerColor", playerColor.toLowerCase()));
+        if (response.containsKey("Error")) {
+            return Map.of("error", "Server error: " + response.get("Error"));
         }
         if (response.isEmpty()) {
             return Map.of("success", true);
         }
+
         return response;
     }
+
+
 
 
 
