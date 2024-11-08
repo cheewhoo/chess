@@ -52,8 +52,17 @@ public class ServerFacade {
     }
 
     public Map<String, Object> createGame(String gameName) {
-        return sendRequest("POST", "/game", Map.of("gameName", gameName));
+        Map<String, Object> response = sendRequest("POST", "/game", Map.of("gameName", gameName));
+
+        // Check for success
+        if (response.containsKey("success") && (boolean) response.get("success")) {
+            return Map.of("success", true);
+        }
+
+        // Return specific error message if available, or a default error
+        return Map.of("error", response.getOrDefault("Error", "Game creation failed: Server error or unknown issue"));
     }
+
 
     public Map<String, Object> listGames() {
         return sendRequest("GET", "/game", null);

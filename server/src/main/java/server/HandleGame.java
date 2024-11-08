@@ -8,6 +8,7 @@ import service.ServiceGame;
 import spark.Request;
 import spark.Response;
 import java.util.HashSet;
+import java.util.Map;
 
 public class HandleGame {
     private final ServiceGame gameService;
@@ -57,7 +58,7 @@ public class HandleGame {
             String authToken = req.headers("authorization");
             int newgameID =  gameService.makeGame(authToken, datagame.gameName());
             resp.status(200);
-            return "{ \"gameID\": " + newgameID + " }";
+            return new Gson().toJson(Map.of("success", true, "gameID", newgameID));
         } catch (UnauthorizedException e) {
             resp.status(401);
             errorModel = new ErrorModel("Error: unauthorized");

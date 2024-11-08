@@ -117,8 +117,8 @@ public class ServerFacadeTests {
         serverFacade.login("gameCreator", "password123");
         Map<String, Object> response = serverFacade.createGame("Chess Game 1");
         assertNotNull(response, "Response should not be null");
-        assertTrue(response.containsKey("gameID"), "Expected response to have gameID, but got: " + response);
-        System.out.println("Create Game Response: " + response);
+        assertTrue(response.containsKey("success"), "Expected 'success', but got: " + response);
+        assertEquals(true, response.get("success"), "Expected true, but got: " + response.get("success"));
     }
 
 
