@@ -82,13 +82,12 @@ public class ServerFacade {
 
             try (InputStream respBody = http.getInputStream()) {
                 responseMap = new Gson().fromJson(new InputStreamReader(respBody), Map.class);
-                System.out.println("Response map: " + responseMap);
             }
 
         } catch (URISyntaxException e) {
             return Map.of("Error", "Invalid URI: " + e.getMessage());
         } catch (IOException e) {
-            return Map.of("Error", "Connection issue: " + e.getMessage()); // More specific error message
+            return Map.of("Error", "Connection issue: " + e.getMessage());
         }
         return responseMap;
     }

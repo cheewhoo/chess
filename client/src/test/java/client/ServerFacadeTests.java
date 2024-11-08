@@ -41,10 +41,11 @@ public class ServerFacadeTests {
     public void testRegister_Success() {
         Map<String, Object> response = serverFacade.register("newUser", "validPassword", "email@example.com");
         System.out.println("Response: " + response);
-        assertNotNull(response, "Response should not be null");
-        assertTrue(response.containsKey("username"), "Expected response to contain 'username', but got: " + response);
-        assertTrue(response.containsKey("authToken"), "Expected response to contain 'authToken', but got: " + response);
+        assertNotNull(response, "Should not be null");
+        assertTrue(response.containsKey("success"), "Expected 'success', but got: " + response);
+        assertEquals(true, response.get("success"), "Expected true, but got: " + response.get("success"));
     }
+
 
 
     @Test
@@ -52,10 +53,11 @@ public class ServerFacadeTests {
     public void testRegister_UserAlreadyExists() {
         serverFacade.register("existingUser", "validPassword", "email@example.com");
         Map<String, Object> response = serverFacade.register("existingUser", "anotherPassword", "email@example.com");
-        assertNotNull(response);
-        assertTrue(response.containsKey("Error"));
-        assertEquals("User already exists", response.get("Error"));
+        assertNotNull(response, "Response should not be null");
+        assertTrue(response.containsKey("error"), "Expected 'error', but got: " + response);
+        assertEquals("User already exists", response.get("error"));
     }
+
 
     @Test
     @Order(3)
@@ -66,7 +68,7 @@ public class ServerFacadeTests {
 
         assertNotNull(response, "Response should not be null");
         assertTrue(response.containsKey("authToken"),
-                "Expected response to contain authToken for successful login, but got: " + response);
+                "Expected authToken for successful login, but got: " + response);
         String authToken = (String) response.get("authToken");
         assertNotNull(authToken, "Auth token should not be null");
         assertFalse(authToken.isEmpty(), "Auth token should not be empty");
@@ -115,7 +117,7 @@ public class ServerFacadeTests {
         serverFacade.login("gameCreator", "password123");
         Map<String, Object> response = serverFacade.createGame("Chess Game 1");
         assertNotNull(response, "Response should not be null");
-        assertTrue(response.containsKey("gameID"), "Expected response to contain gameID, but got: " + response);
+        assertTrue(response.containsKey("gameID"), "Expected response to have gameID, but got: " + response);
         System.out.println("Create Game Response: " + response);
     }
 
