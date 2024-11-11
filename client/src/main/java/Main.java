@@ -9,13 +9,12 @@ public class Main {
         System.out.println("♕ 240 Chess Client");
 
         boolean isLoggedIn = false;
-
+        PreloginUI preloginUI = new PreloginUI(serverFacade, scanner);
+        PostloginUI postloginUI = new PostloginUI(serverFacade, scanner);
         while (true) {
             if (!isLoggedIn) {
-                PreloginUI preloginUI = new PreloginUI(serverFacade, scanner);
                 isLoggedIn = preloginUI.showMenu();
             } else {
-                PostloginUI postloginUI = new PostloginUI(serverFacade, scanner);
                 isLoggedIn = postloginUI.showMenu();
             }
         }

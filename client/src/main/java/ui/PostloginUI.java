@@ -101,12 +101,24 @@ public class PostloginUI {
         int gameNumber = scanner.nextInt();
         scanner.nextLine();
 
-        if (gameNumber < 1 || gameNumber > ListedGames.size()) {
-            System.out.println("Invalid game number.");
+        Map<String, Object> selectedGame = null;
+
+        for (Map<String, Object> game : ListedGames) {
+                if(game.containsKey("gameID")) {
+                    int gameID = ((Double) game.getOrDefault("gameID", -1)).intValue();
+                    if (gameID == gameNumber) {
+                        System.out.println("correct gameID");
+                        selectedGame = game;
+                    }
+                }
+        }
+        if (selectedGame == null) {
+            System.out.println("Invalid gameID");
             return;
         }
 
-        Map<String, Object> selectedGame = ListedGames.get(gameNumber - 1);
+
+
         int gameID = ((Double) selectedGame.get("gameID")).intValue();
 
         System.out.print("Enter player color (black/white): ");
