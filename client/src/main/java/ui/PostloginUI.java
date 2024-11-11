@@ -73,15 +73,14 @@ public class PostloginUI {
     private void handleListGames() {
         Map<String, Object> response = serverFacade.listGames();
         if (response.containsKey("games")) {
-            List<Map<String, Object>> listedGames = (List<Map<String, Object>>) response.get("games");
-            if (listedGames != null && !listedGames.isEmpty()) {
+            ListedGames = (List<Map<String, Object>>) response.get("games");
+            if (ListedGames != null && !ListedGames.isEmpty()) {
                 System.out.println("Available games:");
                 int index = 1;
-                for (Map<String, Object> game : listedGames) {
+                for (Map<String, Object> game : ListedGames) {
                     String gameName = (String) game.getOrDefault("gameName", "Unnamed Game");
-                    Map<String, Object> gameData = (Map<String, Object>) game.get("game");
-                    String currentTeam = gameData != null ? (String) gameData.getOrDefault("currentTeam", "Unknown Team") : "Unknown Team";
-                    System.out.println(index + ": " + gameName + " - Current team: " + currentTeam);
+                    int gameID = ((Double) game.getOrDefault("gameID", -1)).intValue();
+                    System.out.println(index + ": " + gameName + " (ID: " + gameID + ")");
                     index++;
                 }
             } else {
@@ -92,11 +91,23 @@ public class PostloginUI {
         }
     }
 
-
-
     public void handlePlayGame() {
-        System.out.print("Enter game name to join: ");
-        String gameName = scanner.nextLine().trim();
+        if (ListedGames == null || ListedGames.isEmpty()) {
+            System.out.println("No available games. Please list games first.");
+            return;
+        }
+
+        System.out.print("Enter the number of the game to join: ");
+        int gameNumber = scanner.nextInt();
+        scanner.nextLine();
+
+        if (gameNumber < 1 || gameNumber > ListedGames.size()) {
+            System.out.println("Invalid game number.");
+            return;
+        }
+
+        Map<String, Object> selectedGame = ListedGames.get(gameNumber - 1);
+        int gameID = ((Double) selectedGame.get("gameID")).intValue();
 
         System.out.print("Enter player color (black/white): ");
         String playerColor = scanner.nextLine().trim().toLowerCase();
@@ -106,13 +117,14 @@ public class PostloginUI {
             return;
         }
 
-        Map<String, Object> response = serverFacade.joinGame(gameName, playerColor);
+        Map<String, Object> response = serverFacade.joinGame(String.valueOf(gameID), playerColor);
         if (response.containsKey("success") && (boolean) response.get("success")) {
-            System.out.println("Successfully joined game " + gameName + " as " + playerColor + ".");
+            System.out.println("Successfully joined game with ID " + gameID + " as " + playerColor + ".");
         } else {
             System.out.println("Failed to join game: " + response.get("error"));
         }
     }
+
 
 
 
