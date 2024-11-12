@@ -130,6 +130,7 @@ public class PostloginUI {
         Map<String, Object> response = serverFacade.joinGame(String.valueOf(gameID), playerColor);
         if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Successfully joined game with ID " + gameID + " as " + playerColor + ".");
+            chessBoard.resetBoard();
             displayInitialBoard(chessBoard, true);
             displayInitialBoard(chessBoard, false);
         } else {
