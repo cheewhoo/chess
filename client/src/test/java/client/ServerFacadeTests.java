@@ -3,6 +3,8 @@ package client;
 import org.junit.jupiter.api.*;
 import server.Server;
 import ui.*;
+
+import java.util.List;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -154,6 +156,59 @@ public class ServerFacadeTests {
         assertNotNull(response);
         assertTrue(response.containsKey("Error"));
         assertEquals("Unauthorized", response.get("Error"));
+    }
+
+
+
+    @Test
+    public void testJoinGameSuccess() {
+        serverFacade.register("testUser", "password", "email@example.com");
+        serverFacade.login("testUser", "password");
+        Map<String, Object> createGameResponse = serverFacade.createGame("Test Game");
+        assertTrue(createGameResponse.containsKey("success"), "Game creation failed");
+        Map<String, Object> listGamesResponse = serverFacade.listGames();
+        assertTrue(listGamesResponse.containsKey("games"), "Games list is empty");
+        int gameID = ((Double) ((Map<String, Object>) ((List<?>) listGamesResponse.get("games")).get(0)).get("gameID")).intValue();
+        Map<String, Object> joinGameResponse = serverFacade.joinGame(String.valueOf(gameID), "white");
+        assertTrue(joinGameResponse.containsKey("success") && (boolean) joinGameResponse.get("success"), "Failed to join the game");
+    }
+
+    @Test
+    public void testObserveGameSuccess() {
+        // Mock the setup by registering, logging in, and creating a game
+        serverFacade.register("observerUser", "password", "observer@example.com");
+        serverFacade.login("observerUser", "password");
+        Map<String, Object> createGameResponse = serverFacade.createGame("Observable Game");
+        assertTrue(createGameResponse.containsKey("success"), "Game creation failed");
+        Map<String, Object> listGamesResponse = serverFacade.listGames();
+        assertTrue(listGamesResponse.containsKey("games"), "Games list is empty");
+        int gameID = ((Double) ((Map<String, Object>) ((List<?>) listGamesResponse.get("games")).get(0)).get("gameID")).intValue();
+        Map<String, Object> observeGameResponse = serverFacade.observeGame(String.valueOf(gameID));
+        assertFalse(observeGameResponse.containsKey("error"), "Error while observing game");
+    }
+
+
+    @Test
+    public void testJoinGameFailure_InvalidColor() {
+        serverFacade.register("testUser", "password", "email@example.com");
+        serverFacade.login("testUser", "password");
+        Map<String, Object> createGameResponse = serverFacade.createGame("Test Game");
+        assertTrue(createGameResponse.containsKey("success"), "Game creation failed");
+        Map<String, Object> listGamesResponse = serverFacade.listGames();
+        assertTrue(listGamesResponse.containsKey("games"), "Games list is empty");
+        int gameID = ((Double) ((Map<String, Object>) ((List<?>) listGamesResponse.get("games")).get(0)).get("gameID")).intValue();
+        Map<String, Object> joinGameResponse = serverFacade.joinGame(String.valueOf(gameID), "blue");
+        assertTrue(joinGameResponse.containsKey("error"), "Expected error for invalid color was not received");
+        assertEquals("Invalid color specified. Choose 'white' or 'black'.", joinGameResponse.get("error"), "Error message did not match expected output");
+    }
+
+    @Test
+    public void testObserveGameFailure_NonExistentGame() {
+        serverFacade.register("observerUser", "password", "observer@example.com");
+        serverFacade.login("observerUser", "password");
+        Map<String, Object> observeGameResponse = serverFacade.observeGame("99999");
+        assertTrue(observeGameResponse.containsKey("Error"), "Expected error for non-existent game was not received");
+        assertEquals("Error observing game: Game not found", observeGameResponse.get("error"), "Error message did not match expected output");
     }
 
 }
