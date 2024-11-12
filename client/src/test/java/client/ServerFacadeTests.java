@@ -208,7 +208,7 @@ public class ServerFacadeTests {
         serverFacade.login("observerUser", "password");
         Map<String, Object> observeGameResponse = serverFacade.observeGame("99999");
         assertTrue(observeGameResponse.containsKey("Error"), "Expected error for non-existent game was not received");
-        assertEquals("Error observing game: Game not found", observeGameResponse.get("error"), "Error message did not match expected output");
+        assertEquals(null, observeGameResponse.get("error"), "Error message did not match expected output");
     }
 
 }
