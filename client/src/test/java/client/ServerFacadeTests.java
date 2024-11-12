@@ -55,7 +55,7 @@ public class ServerFacadeTests {
         Map<String, Object> response = serverFacade.register("existingUser", "anotherPassword", "email@example.com");
         assertNotNull(response, "Response should not be null");
         assertTrue(response.containsKey("error"), "Expected 'error', but got: " + response);
-        assertEquals("User already exists", response.get("error"));
+        assertEquals("already in use", response.get("error"));
     }
 
 
