@@ -11,11 +11,13 @@ public class PostloginUI {
     private final Scanner scanner;
     private List<Map<String, Object>> ListedGames;
     private ChessBoard chessBoard;
+    private ChessBoardRenderer chessBoardRenderer;
 
     public PostloginUI(ServerFacade serverFacade, Scanner scanner) {
         this.serverFacade = serverFacade;
         this.scanner = scanner;
         this.chessBoard = new ChessBoard();
+        this.chessBoardRenderer = new ChessBoardRenderer();
     }
 
     public boolean showMenu() {
@@ -136,14 +138,24 @@ public class PostloginUI {
         Map<String, Object> response = serverFacade.joinGame(String.valueOf(gameID), playerColor);
         if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Successfully joined game with ID " + gameID + " as " + playerColor + ".");
-            chessBoard.resetBoard();
-            System.out.println(chessBoard);
+            displayInitialBoard(chessBoard, true);
+            displayInitialBoard(chessBoard, false);
         } else {
             System.out.println("Failed to join game: " + response.get("error"));
         }
     }
 
+    public void displayInitialBoard(ChessBoard board, boolean whiteAtBottom) {
+        board.resetBoard();
+        System.out.println("Initial board with " + (whiteAtBottom ? "White" : "Black") + " at the bottom:");
+        chessBoardRenderer.drawBoard(board, whiteAtBottom);
+    }
 
+    public void handleObserveGame() {
+        ChessBoard board = new ChessBoard();
+        displayInitialBoard(board, true);
+        displayInitialBoard(board, false);
+    }
 
 
 
