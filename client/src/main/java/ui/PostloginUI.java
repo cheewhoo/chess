@@ -88,8 +88,10 @@ public class PostloginUI {
                 int index = 1;
                 for (Map<String, Object> game : ListedGames) {
                     String gameName = (String) game.getOrDefault("gameName", "Unnamed Game");
+                    String whiteuser = (String) game.getOrDefault("whiteUsername", "[not in use]");
+                    String blackuser = (String) game.getOrDefault("blackUsername", "[not in use]");
                     int gameID = ((Double) game.getOrDefault("gameID", -1)).intValue();
-                    System.out.println(index + ": " + gameName + " (ID: " + gameID + ")");
+                    System.out.println(index + ": " + gameName + " white: " + whiteuser +  ", black: " + blackuser);
                     index++;
                 }
             } else {
@@ -109,24 +111,11 @@ public class PostloginUI {
         System.out.print("Enter the number of the game to join: ");
         int gameNumber = scanner.nextInt();
         scanner.nextLine();
-
-        Map<String, Object> selectedGame = null;
-
-        for (Map<String, Object> game : ListedGames) {
-                if(game.containsKey("gameID")) {
-                    int gameID = ((Double) game.getOrDefault("gameID", -1)).intValue();
-                    if (gameID == gameNumber) {
-                        System.out.println("correct gameID");
-                        selectedGame = game;
-                    }
-                }
-        }
-        if (selectedGame == null) {
-            System.out.println("Invalid gameID");
+        if(gameNumber < 1 || gameNumber > ListedGames.size()) {
+            System.out.println("Invalid game number. Try again.");
             return;
         }
-
-
+        Map<String, Object> selectedGame = ListedGames.get(gameNumber);
 
         int gameID = ((Double) selectedGame.get("gameID")).intValue();
 

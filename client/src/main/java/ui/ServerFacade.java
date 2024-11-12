@@ -80,7 +80,7 @@ public class ServerFacade {
                 return Map.of("Error", "Unauthorized");
             }
             if (http.getResponseCode() == 403) {
-                return Map.of("Error", "User already exists");
+                return Map.of("Error", "already in use");
             }
             if (http.getResponseCode() != 200) {
                 return Map.of("Error", "Unexpected response code: " + http.getResponseCode());
@@ -104,6 +104,9 @@ public class ServerFacade {
         Map<String, Object> response = sendRequest("PUT", "/game", requestBody);
         if (response.containsKey("error")) {
             return Map.of("error", "Server error: " + response.get("error"));
+        }
+        else if (response.containsKey("Error")){
+            return Map.of("error", "Server error: " + response.get("Error"));
         }
         if (response.isEmpty()) {
             return Map.of("success", true);
