@@ -152,29 +152,19 @@ public class PostloginUI {
         System.out.print("Enter the game ID to observe: ");
         int gameNumber = scanner.nextInt();
         scanner.nextLine();
-
-        Map<String, Object> selectedGame = null;
-        for (Map<String, Object> game : ListedGames) {
-            if (game.containsKey("gameID")) {
-                int gameID = ((Double) game.getOrDefault("gameID", -1)).intValue();
-                if (gameID == gameNumber) {
-                    System.out.println("correct gameID");
-                    selectedGame = game;
-                    break;
-                }
-            }
-        }
-
-        if (selectedGame == null) {
-            System.out.println("Invalid gameID");
+        if(gameNumber < 1 || gameNumber > ListedGames.size()) {
+            System.out.println("Invalid game number. Try again.");
             return;
         }
+
+        Map<String, Object> selectedGame = ListedGames.get(gameNumber-1);
 
         int gameID = ((Double) selectedGame.get("gameID")).intValue();
         Map<String, Object> response = serverFacade.observeGame(String.valueOf(gameID));
         if (response.containsKey("error")) {
             System.out.println("Failed to observe game: " + response.get("error"));
         } else {
+            chessBoard.resetBoard();
             displayBoardState(chessBoard, true);
             displayBoardState(chessBoard, false);
         }
