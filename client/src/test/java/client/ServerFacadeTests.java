@@ -82,8 +82,8 @@ public class ServerFacadeTests {
         serverFacade.register("testUser2", "password123", "test2@example.com");
         Map<String, Object> response = serverFacade.login("testUser2", "wrongPassword");
         assertNotNull(response);
-        assertTrue(response.containsKey("Error"));
-        assertEquals("Unauthorized", response.get("Error"));
+        assertTrue(response.containsKey("error"));
+        assertEquals("Unauthorized", response.get("error"));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class ServerFacadeTests {
         serverFacade.setAuthToken(null);
         Map<String, Object> response = serverFacade.createGame("Chess Game 2");
         assertNotNull(response);
-        assertTrue(response.containsKey("Error"));
+        assertTrue(response.containsKey("error"));
         assertEquals("Unauthorized", response.get("error"));
     }
 
