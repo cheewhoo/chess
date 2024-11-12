@@ -1,5 +1,7 @@
 package ui;
 
+import chess.ChessBoard;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -8,10 +10,12 @@ public class PostloginUI {
     private final ServerFacade serverFacade;
     private final Scanner scanner;
     private List<Map<String, Object>> ListedGames;
+    private ChessBoard chessBoard;
 
     public PostloginUI(ServerFacade serverFacade, Scanner scanner) {
         this.serverFacade = serverFacade;
         this.scanner = scanner;
+        this.chessBoard = new ChessBoard();
     }
 
     public boolean showMenu() {
@@ -132,6 +136,8 @@ public class PostloginUI {
         Map<String, Object> response = serverFacade.joinGame(String.valueOf(gameID), playerColor);
         if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Successfully joined game with ID " + gameID + " as " + playerColor + ".");
+            chessBoard.resetBoard();
+            System.out.println(chessBoard);
         } else {
             System.out.println("Failed to join game: " + response.get("error"));
         }
