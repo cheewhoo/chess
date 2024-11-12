@@ -115,7 +115,7 @@ public class PostloginUI {
             System.out.println("Invalid game number. Try again.");
             return;
         }
-        Map<String, Object> selectedGame = ListedGames.get(gameNumber);
+        Map<String, Object> selectedGame = ListedGames.get(gameNumber-1);
 
         int gameID = ((Double) selectedGame.get("gameID")).intValue();
 
