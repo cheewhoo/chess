@@ -27,7 +27,8 @@ public class PostloginUI {
         System.out.println("3. Create Game");
         System.out.println("4. List Games");
         System.out.println("5. Play Game");
-        System.out.println("6. Quit");
+        System.out.println("6. Observe Game");
+        System.out.println("7. Quit");
 
         int choice = getUserChoice();
 
@@ -39,7 +40,8 @@ public class PostloginUI {
             case 3 -> handleCreateGame();
             case 4 -> handleListGames();
             case 5 -> handlePlayGame();
-            case 6 -> quit();
+            case 6 -> handleObserveGame();
+            case 7 -> quit();
             default -> System.out.println("Invalid choice. Try again.");
         }
         return true;
@@ -71,6 +73,7 @@ public class PostloginUI {
         Map<String, Object> response = serverFacade.createGame(gameName);
         if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Game created successfully: " + gameName);
+            chessBoard.resetBoard();
         } else {
             System.out.println("Game creation failed: " + response.get("error"));
         }
@@ -146,17 +149,52 @@ public class PostloginUI {
     }
 
     public void displayInitialBoard(ChessBoard board, boolean whiteAtBottom) {
-        board.resetBoard();
-        System.out.println("Initial board with " + (whiteAtBottom ? "White" : "Black") + " at the bottom:");
+        System.out.println("Board with " + (whiteAtBottom ? "White" : "Black") + " at the bottom:");
         chessBoardRenderer.drawBoard(board, whiteAtBottom);
     }
 
     public void handleObserveGame() {
-        ChessBoard board = new ChessBoard();
-        displayInitialBoard(board, true);
-        displayInitialBoard(board, false);
+        if (ListedGames == null || ListedGames.isEmpty()) {
+            System.out.println("No available games. Please list games first.");
+            return;
+        }
+
+        System.out.print("Enter the game ID to observe: ");
+        int gameNumber = scanner.nextInt();
+        scanner.nextLine();
+
+        Map<String, Object> selectedGame = null;
+        for (Map<String, Object> game : ListedGames) {
+            if (game.containsKey("gameID")) {
+                int gameID = ((Double) game.getOrDefault("gameID", -1)).intValue();
+                if (gameID == gameNumber) {
+                    System.out.println("correct gameID");
+                    selectedGame = game;
+                    break;
+                }
+            }
+        }
+
+        if (selectedGame == null) {
+            System.out.println("Invalid gameID");
+            return;
+        }
+
+        int gameID = ((Double) selectedGame.get("gameID")).intValue();
+        Map<String, Object> response = serverFacade.observeGame(String.valueOf(gameID));
+        if (response.containsKey("error")) {
+            System.out.println("Failed to observe game: " + response.get("error"));
+        } else {
+            displayBoardState(chessBoard, true);
+            displayBoardState(chessBoard, false);
+        }
     }
 
+
+    public void displayBoardState(ChessBoard board, boolean whiteAtBottom) {
+        System.out.println("Board with " + (whiteAtBottom ? "White" : "Black") + " at the bottom:");
+        chessBoardRenderer.drawBoard(board, whiteAtBottom);
+    }
 
 
     private void quit () {

@@ -112,6 +112,14 @@ public class ServerFacade {
         return response;
     }
 
+    public Map<String, Object> observeGame(String gameID) {
+        Map<String, String> requestBody = Map.of("gameID", gameID);
+        Map<String, Object> response = sendRequest("GET", "/game/observe", requestBody);
+        if (response.containsKey("error")) {
+            return Map.of("error", "Error observing game: " + response.get("error"));
+        }
+        return response;
+    }
 
 
 
