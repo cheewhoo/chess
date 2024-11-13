@@ -20,7 +20,6 @@ public class ChessBoardRenderer {
 
         for (int row = startRow; whiteAtBottom ? row <= endRow : row >= endRow; row += rowIncrement) {
             System.out.print((whiteAtBottom ? 8 - (row - 1) : row) + " ");
-
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
@@ -30,14 +29,15 @@ public class ChessBoardRenderer {
                 String pieceSymbol = piece == null ? EMPTY : getPieceSymbol(piece);
                 System.out.print(squareColor + pieceSymbol + RESET_BG_COLOR + " ");
             }
-            System.out.println();
+
+            System.out.println(" " + (whiteAtBottom ? 8 - (row - 1) : row));
         }
+
         System.out.print(" ");
         for (char col = 'a'; col <= 'h'; col++) {
             System.out.print("  " + col + " ");
         }
         System.out.println();
-
         System.out.print(RESET_BG_COLOR + RESET_TEXT_COLOR);
     }
 
