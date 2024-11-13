@@ -28,7 +28,6 @@ public class PostloginUI {
         System.out.println("4. List Games");
         System.out.println("5. Play Game");
         System.out.println("6. Observe Game");
-        System.out.println("7. Quit");
 
         int choice = getUserChoice();
 
@@ -42,7 +41,6 @@ public class PostloginUI {
             case 4 -> handleListGames();
             case 5 -> handlePlayGame();
             case 6 -> handleObserveGame();
-            case 7 -> quit();
             default -> System.out.println("Invalid choice. Try again.");
         }
         return true;
@@ -74,7 +72,6 @@ public class PostloginUI {
         System.out.println(" - Create Game: Start a new chess game.");
         System.out.println(" - List Games: View available games.");
         System.out.println(" - Play Game: Join a chess game.");
-        System.out.println(" - Quit: Exit the program.");
     }
 
     private void handleLogout() {
