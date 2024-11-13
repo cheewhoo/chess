@@ -57,7 +57,7 @@ public class PostloginUI {
                 if (choice >= 1 && choice <= 7) {
                     break;
                 } else {
-                    System.out.println("Invalid choice. Please select a number between 1 and 7.");
+                    System.out.println("Invalid choice. Please select a number between 1 and 6.");
                 }
             } else {
                 System.out.println("Invalid input. Please enter a valid number.");
@@ -79,12 +79,6 @@ public class PostloginUI {
         System.out.println("Logging out...");
         serverFacade.logout(authToken);
         System.out.println("Successfully logged out.");
-        PreloginUI preloginUI = new PreloginUI(serverFacade, scanner);
-        String loggedIn = preloginUI.showMenu();
-
-        if (loggedIn.equals("no value")) {
-            showMenu(authToken);
-        }
     }
 
     private void handleCreateGame(String authToken) {

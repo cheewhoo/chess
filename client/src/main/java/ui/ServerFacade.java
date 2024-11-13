@@ -18,7 +18,7 @@ public class ServerFacade {
     }
 
     public Map<String, Object> register(String username, String password, String email) {
-        Map<String, Object> response = sendRequest("POST", "/user", Map.of("username", username, "password", password, "email", email), authToken);
+        Map<String, Object> response = sendRequest("POST", "/user", Map.of("username", username, "password", password, "email", email), null);
         if (response.containsKey("Error")) {
             return Map.of("error", response.get("Error"));
         }
