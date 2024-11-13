@@ -24,7 +24,7 @@ public class PreloginUI {
 
         switch (choice) {
             case 1 -> displayHelp();
-            case 2 -> handleRegister();
+            case 2 -> { return handleRegister();}
             case 3 -> {
                 return handleLogin();
             }
@@ -61,7 +61,7 @@ public class PreloginUI {
         System.out.println(" - Quit: Exit the program.");
     }
 
-    private void handleRegister() {
+    private boolean handleRegister() {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
         System.out.print("Enter password: ");
@@ -72,8 +72,10 @@ public class PreloginUI {
         Map<String, Object> response = serverFacade.register(username, password, email);
         if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Registration successful. Please login.");
+            return true;
         } else {
             System.out.println("Registration failed: " + response.get("error"));
+            return false;
         }
     }
 
