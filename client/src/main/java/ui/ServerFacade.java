@@ -98,7 +98,7 @@ public class ServerFacade {
 
     public Map<String, Object> joinGame(String gameID, String playerColor) {
         if (playerColor == null || (!playerColor.equalsIgnoreCase("white") && !playerColor.equalsIgnoreCase("black"))) {
-            return Map.of("error", "Invalid color specified. Choose 'white' or 'black'.");
+            return Map.of("error", "Invalid color. Choose 'white' or 'black'.");
         }
         Map<String, String> requestBody = Map.of("gameID", gameID, "playerColor", playerColor.toLowerCase());
         Map<String, Object> response = sendRequest("PUT", "/game", requestBody);
