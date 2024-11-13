@@ -107,10 +107,24 @@ public class PostloginUI {
             System.out.println("No available games. Please list games first.");
             return;
         }
-
         System.out.print("Enter the number of the game to join: ");
-        int gameNumber = scanner.nextInt();
-        scanner.nextLine();
+        int gameNumber;
+        while (true) {
+            if (scanner.hasNextInt()) {
+                gameNumber = scanner.nextInt();
+                scanner.nextLine();
+                if (gameNumber >= 1 && gameNumber <= ListedGames.size()) {
+                    break;
+                } else {
+                    System.out.println("Invalid game number. Try again.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid game number.");
+                scanner.nextLine();
+            }
+            System.out.print("Enter the number of the game to join: ");
+        }
+
         if(gameNumber < 1 || gameNumber > ListedGames.size()) {
             System.out.println("Invalid game number. Try again.");
             return;
