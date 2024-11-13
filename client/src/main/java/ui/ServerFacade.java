@@ -56,8 +56,11 @@ public class ServerFacade {
 
 
     public Map<String, Object> listGames() {
-        return sendRequest("GET", "/game", null);
+        Map<String, Object> response = sendRequest("GET", "/game", null);
+        System.out.println("Response from listGames: " + response);
+        return response;
     }
+
 
     private Map<String, Object> sendRequest(String method, String endpoint, Map<String, String> body) {
         Map<String, Object> responseMap;
