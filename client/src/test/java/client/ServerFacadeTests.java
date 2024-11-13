@@ -2,12 +2,17 @@ package client;
 import org.junit.jupiter.api.*;
 import server.Server;
 import ui.*;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 public class ServerFacadeTests {
     private static Server server;
     private static ServerFacade serverFacade;
+    private String authToken;
     @BeforeAll
     public static void init() {
         server = new Server();
@@ -23,6 +28,12 @@ public class ServerFacadeTests {
     static void stopServer() {
         server.stop();
     }
+    public String getAuthToken() {
+        Map<String,Object> registerResponse = serverFacade.register("logoutUser", "password123", "logout@example.com");
+        String authToken = (String)registerResponse.getOrDefault("authToken", null);
+        return authToken;
+    }
+
     @Test
     public void sampleTest() {
         Assertions.assertTrue(true);
@@ -71,9 +82,8 @@ public class ServerFacadeTests {
     @Test
     @Order(5)
     public void testLogoutSuccess() {
-        serverFacade.register("logoutUser", "password123", "logout@example.com");
-        serverFacade.login("logoutUser", "password123");
-        Map<String, Object> response = serverFacade.logout();
+        String authToken = getAuthToken();
+        Map<String, Object> response = serverFacade.logout(authToken);
         System.out.println("Logout response: " + response);
         assertNotNull(response, "Response should not be null");
         assertTrue(response.isEmpty() || (response.containsKey("success") && (boolean) response.get("success")),
@@ -83,7 +93,7 @@ public class ServerFacadeTests {
     @Order(6)
     public void testLogoutNoAuthToken() {
         serverFacade.setAuthToken(null);
-        Map<String, Object> response = serverFacade.logout();
+        Map<String, Object> response = serverFacade.logout(null);
         assertNotNull(response);
         assertTrue(response.containsKey("Error"));
         assertEquals("Unauthorized", response.get("Error"));
@@ -93,9 +103,8 @@ public class ServerFacadeTests {
     @DisplayName("Create Game: Successful Game Creation")
     public void testCreateGameSuccess() {
         // Register and login to get an auth token
-        serverFacade.register("gameCreator", "password123", "game@example.com");
-        serverFacade.login("gameCreator", "password123");
-        Map<String, Object> response = serverFacade.createGame("Chess Game 1");
+        String authToken = getAuthToken();
+        Map<String, Object> response = serverFacade.createGame("Chess Game 1", authToken);
         assertNotNull(response, "Response should not be null");
         assertTrue(response.containsKey("success"), "Expected 'success', but got: " + response);
         assertEquals(true, response.get("success"), "Expected true, but got: " + response.get("success"));
@@ -104,7 +113,7 @@ public class ServerFacadeTests {
     @Order(8)
     public void testCreateGameNoAuthToken() {
         serverFacade.setAuthToken(null);
-        Map<String, Object> response = serverFacade.createGame("Chess Game 2");
+        Map<String, Object> response = serverFacade.createGame("Chess Game 2", null);
         assertNotNull(response);
         assertTrue(response.containsKey("error"));
         assertEquals("Unauthorized", response.get("error"));
@@ -112,12 +121,11 @@ public class ServerFacadeTests {
     @Test
     @Order(9)
     public void testListGamesSuccess() {
-        serverFacade.register("listUser", "password123", "list@example.com");
-        serverFacade.login("listUser", "password123");
-        serverFacade.createGame("Game 1");
-        serverFacade.createGame("Game 2");
+        String authToken = getAuthToken();
+        serverFacade.createGame("Game 1", authToken);
+        serverFacade.createGame("Game 2", authToken);
 
-        Map<String, Object> response = serverFacade.listGames();
+        Map<String, Object> response = serverFacade.listGames(authToken);
         assertNotNull(response);
         assertTrue(response.containsKey("games"));
     }
@@ -125,54 +133,50 @@ public class ServerFacadeTests {
     @Order(10)
     public void testListGamesNoAuthToken() {
         serverFacade.setAuthToken(null);
-        Map<String, Object> response = serverFacade.listGames();
+        Map<String, Object> response = serverFacade.listGames(null);
         assertNotNull(response);
         assertTrue(response.containsKey("Error"));
         assertEquals("Unauthorized", response.get("Error"));
     }
     @Test
     public void testJoinGameSuccess() {
-        serverFacade.register("testUser", "password", "email@example.com");
-        serverFacade.login("testUser", "password");
-        Map<String, Object> createGameResponse = serverFacade.createGame("Test Game");
+        String authToken = getAuthToken();
+        Map<String, Object> createGameResponse = serverFacade.createGame("Test Game", authToken);
         assertTrue(createGameResponse.containsKey("success"), "Game creation failed");
-        Map<String, Object> listGamesResponse = serverFacade.listGames();
+        Map<String, Object> listGamesResponse = serverFacade.listGames(authToken);
         assertTrue(listGamesResponse.containsKey("games"), "Games list is empty");
         int gameID = ((Double) ((Map<String, Object>) ((List<?>) listGamesResponse.get("games")).get(0)).get("gameID")).intValue();
-        Map<String, Object> joinGameResponse = serverFacade.joinGame(String.valueOf(gameID), "white");
+        Map<String, Object> joinGameResponse = serverFacade.joinGame(String.valueOf(gameID), "white", authToken);
         assertTrue(joinGameResponse.containsKey("success") && (boolean) joinGameResponse.get("success"), "Failed to join the game");
     }
     @Test
     public void testObserveGameSuccess() {
-        serverFacade.register("observerUser", "password", "observer@example.com");
-        serverFacade.login("observerUser", "password");
-        Map<String, Object> createGameResponse = serverFacade.createGame("Observable Game");
+        String authToken = getAuthToken();
+        Map<String, Object> createGameResponse = serverFacade.createGame("Observable Game", authToken);
         assertTrue(createGameResponse.containsKey("success"), "Game creation failed");
-        Map<String, Object> listGamesResponse = serverFacade.listGames();
+        Map<String, Object> listGamesResponse = serverFacade.listGames(authToken);
         assertTrue(listGamesResponse.containsKey("games"), "Games list is empty");
         int gameID = ((Double) ((Map<String, Object>) ((List<?>) listGamesResponse.get("games")).get(0)).get("gameID")).intValue();
-        Map<String, Object> observeGameResponse = serverFacade.observeGame(String.valueOf(gameID));
+        Map<String, Object> observeGameResponse = serverFacade.observeGame(String.valueOf(gameID),authToken);
         assertFalse(observeGameResponse.containsKey("error"), "Error while observing game");
     }
     @Test
     public void testJoinGameFailureInvalidColor() {
-        serverFacade.register("testUser", "password", "email@example.com");
-        serverFacade.login("testUser", "password");
-        Map<String, Object> createGameResponse = serverFacade.createGame("Test Game");
+        String authToken = getAuthToken();
+        Map<String, Object> createGameResponse = serverFacade.createGame("Test Game", authToken);
         assertTrue(createGameResponse.containsKey("success"), "Game creation failed");
-        Map<String, Object> listGamesResponse = serverFacade.listGames();
+        Map<String, Object> listGamesResponse = serverFacade.listGames(authToken);
         assertTrue(listGamesResponse.containsKey("games"), "Games list is empty");
         int gameID = ((Double) ((Map<String, Object>) ((List<?>) listGamesResponse.get("games")).get(0)).get("gameID")).intValue();
-        Map<String, Object> joinGameResponse = serverFacade.joinGame(String.valueOf(gameID), "blue");
+        Map<String, Object> joinGameResponse = serverFacade.joinGame(String.valueOf(gameID), "blue", authToken);
         assertTrue(joinGameResponse.containsKey("error"), "Expected error for invalid color was not received");
         assertEquals("Invalid color. Choose 'white' or 'black'.", joinGameResponse.get("error"), "Error message didnt match expected output");
     }
     @Test
     public void testObserveGameFailureNonExistentGame() {
-        serverFacade.register("observerUser", "password", "observer@example.com");
-        serverFacade.login("observerUser", "password");
+        String authToken = getAuthToken();
         String nonExistentGameId = "99999";
-        Map<String, Object> observeGameResponse = serverFacade.observeGame(nonExistentGameId);
+        Map<String, Object> observeGameResponse = serverFacade.observeGame(nonExistentGameId, authToken);
         assertTrue(observeGameResponse.containsKey("Error"),
                 "Expected error for non-existent game was not received");
         assertEquals(null, observeGameResponse.get("error"),
