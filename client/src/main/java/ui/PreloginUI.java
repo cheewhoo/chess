@@ -35,8 +35,23 @@ public class PreloginUI {
     }
 
     private int getUserChoice() {
-        System.out.print("Choose an option: ");
-        return Integer.parseInt(scanner.nextLine());
+        int choice;
+        while (true) {
+            System.out.print("Choose an option: ");
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice >= 1 && choice <= 4) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please select a number between 1 and 4.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
+            }
+        }
+        return choice;
     }
 
     private void displayHelp() {
