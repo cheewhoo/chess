@@ -1,19 +1,13 @@
 package client;
-
 import org.junit.jupiter.api.*;
 import server.Server;
 import ui.*;
-
 import java.util.List;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
-
-
 public class ServerFacadeTests {
-
     private static Server server;
     private static ServerFacade serverFacade;
-
     @BeforeAll
     public static void init() {
         server = new Server();
@@ -21,23 +15,18 @@ public class ServerFacadeTests {
         System.out.println("Started test HTTP server on " + port);
         serverFacade = new ServerFacade("http://localhost:" + port);
     }
-
     @AfterEach
     void cleanup() {
         server.clearDatabase();
     }
-
     @AfterAll
     static void stopServer() {
         server.stop();
     }
-
-
     @Test
     public void sampleTest() {
         Assertions.assertTrue(true);
     }
-
     @Test
     @Order(1)
     public void testRegisterSuccess() {
@@ -47,9 +36,6 @@ public class ServerFacadeTests {
         assertTrue(response.containsKey("success"), "Expected 'success', but got: " + response);
         assertEquals(true, response.get("success"), "Expected true, but got: " + response.get("success"));
     }
-
-
-
     @Test
     @Order(2)
     public void testRegisterUserAlreadyExists() {
@@ -59,8 +45,6 @@ public class ServerFacadeTests {
         assertTrue(response.containsKey("error"), "Expected 'error', but got: " + response);
         assertEquals("already in use", response.get("error"));
     }
-
-
     @Test
     @Order(3)
     @DisplayName("Login: Successful Login")
@@ -75,9 +59,6 @@ public class ServerFacadeTests {
         assertNotNull(authToken, "Auth token should not be null");
         assertFalse(authToken.isEmpty(), "Auth token should not be empty");
     }
-
-
-
     @Test
     @Order(4)
     public void testLoginIncorrectPassword() {
@@ -87,7 +68,6 @@ public class ServerFacadeTests {
         assertTrue(response.containsKey("error"));
         assertEquals("Unauthorized", response.get("error"));
     }
-
     @Test
     @Order(5)
     public void testLogoutSuccess() {
@@ -99,8 +79,6 @@ public class ServerFacadeTests {
         assertTrue(response.isEmpty() || (response.containsKey("success") && (boolean) response.get("success")),
                 "Expected logout response to indicate success, but got: " + response);
     }
-
-
     @Test
     @Order(6)
     public void testLogoutNoAuthToken() {
@@ -110,7 +88,6 @@ public class ServerFacadeTests {
         assertTrue(response.containsKey("Error"));
         assertEquals("Unauthorized", response.get("Error"));
     }
-
     @Test
     @Order(7)
     @DisplayName("Create Game: Successful Game Creation")
@@ -123,8 +100,6 @@ public class ServerFacadeTests {
         assertTrue(response.containsKey("success"), "Expected 'success', but got: " + response);
         assertEquals(true, response.get("success"), "Expected true, but got: " + response.get("success"));
     }
-
-
     @Test
     @Order(8)
     public void testCreateGameNoAuthToken() {
@@ -134,7 +109,6 @@ public class ServerFacadeTests {
         assertTrue(response.containsKey("error"));
         assertEquals("Unauthorized", response.get("error"));
     }
-
     @Test
     @Order(9)
     public void testListGamesSuccess() {
@@ -147,7 +121,6 @@ public class ServerFacadeTests {
         assertNotNull(response);
         assertTrue(response.containsKey("games"));
     }
-
     @Test
     @Order(10)
     public void testListGamesNoAuthToken() {
@@ -157,9 +130,6 @@ public class ServerFacadeTests {
         assertTrue(response.containsKey("Error"));
         assertEquals("Unauthorized", response.get("Error"));
     }
-
-
-
     @Test
     public void testJoinGameSuccess() {
         serverFacade.register("testUser", "password", "email@example.com");
@@ -172,10 +142,8 @@ public class ServerFacadeTests {
         Map<String, Object> joinGameResponse = serverFacade.joinGame(String.valueOf(gameID), "white");
         assertTrue(joinGameResponse.containsKey("success") && (boolean) joinGameResponse.get("success"), "Failed to join the game");
     }
-
     @Test
     public void testObserveGameSuccess() {
-        // Mock the setup by registering, logging in, and creating a game
         serverFacade.register("observerUser", "password", "observer@example.com");
         serverFacade.login("observerUser", "password");
         Map<String, Object> createGameResponse = serverFacade.createGame("Observable Game");
@@ -186,8 +154,6 @@ public class ServerFacadeTests {
         Map<String, Object> observeGameResponse = serverFacade.observeGame(String.valueOf(gameID));
         assertFalse(observeGameResponse.containsKey("error"), "Error while observing game");
     }
-
-
     @Test
     public void testJoinGameFailureInvalidColor() {
         serverFacade.register("testUser", "password", "email@example.com");
@@ -201,7 +167,6 @@ public class ServerFacadeTests {
         assertTrue(joinGameResponse.containsKey("error"), "Expected error for invalid color was not received");
         assertEquals("Invalid color specified. Choose 'white' or 'black'.", joinGameResponse.get("error"), "Error message did not match expected output");
     }
-
     @Test
     public void testObserveGameFailureNonExistentGame() {
         serverFacade.register("observerUser", "password", "observer@example.com");
