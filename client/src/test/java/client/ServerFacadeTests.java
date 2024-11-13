@@ -165,7 +165,7 @@ public class ServerFacadeTests {
         int gameID = ((Double) ((Map<String, Object>) ((List<?>) listGamesResponse.get("games")).get(0)).get("gameID")).intValue();
         Map<String, Object> joinGameResponse = serverFacade.joinGame(String.valueOf(gameID), "blue");
         assertTrue(joinGameResponse.containsKey("error"), "Expected error for invalid color was not received");
-        assertEquals("Invalid color specified. Choose 'white' or 'black'.", joinGameResponse.get("error"), "Error message did not match expected output");
+        assertEquals("Invalid color. Choose 'white' or 'black'.", joinGameResponse.get("error"), "Error message didnt match expected output");
     }
     @Test
     public void testObserveGameFailureNonExistentGame() {
