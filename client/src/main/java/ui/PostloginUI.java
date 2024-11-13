@@ -122,9 +122,10 @@ public class PostloginUI {
         System.out.print("Enter player color (black/white): ");
         String playerColor = scanner.nextLine().trim().toLowerCase();
 
-        if (!playerColor.equals("black") && !playerColor.equals("white")) {
+        while (!playerColor.equals("black") && !playerColor.equals("white")) {
             System.out.println("Invalid color choice. Please enter 'black' or 'white'.");
-            return;
+            System.out.print("Enter player color (black/white): ");
+            playerColor = scanner.nextLine().trim().toLowerCase();
         }
 
         Map<String, Object> response = serverFacade.joinGame(String.valueOf(gameID), playerColor);
