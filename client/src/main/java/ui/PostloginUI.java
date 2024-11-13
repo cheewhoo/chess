@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class PostloginUI {
     private final ServerFacade serverFacade;
     private final Scanner scanner;
-    private List<Map<String, Object>> ListedGames;
+    private List<Map<String, Object>> listedGames;
     private ChessBoard chessBoard;
     private ChessBoardRenderer chessBoardRenderer;
 
@@ -82,11 +82,11 @@ public class PostloginUI {
     private void handleListGames() {
         Map<String, Object> response = serverFacade.listGames();
         if (response.containsKey("games")) {
-            ListedGames = (List<Map<String, Object>>) response.get("games");
-            if (ListedGames != null && !ListedGames.isEmpty()) {
+            listedGames = (List<Map<String, Object>>) response.get("games");
+            if (listedGames != null && !listedGames.isEmpty()) {
                 System.out.println("Available games:");
                 int index = 1;
-                for (Map<String, Object> game : ListedGames) {
+                for (Map<String, Object> game : listedGames) {
                     String gameName = (String) game.getOrDefault("gameName", "Unnamed Game");
                     String whiteuser = (String) game.getOrDefault("whiteUsername", "[not in use]");
                     String blackuser = (String) game.getOrDefault("blackUsername", "[not in use]");
@@ -103,7 +103,7 @@ public class PostloginUI {
     }
 
     public void handlePlayGame() {
-        if (ListedGames == null || ListedGames.isEmpty()) {
+        if (listedGames == null || listedGames.isEmpty()) {
             System.out.println("No available games. Please list games first.");
             return;
         }
@@ -113,7 +113,7 @@ public class PostloginUI {
             if (scanner.hasNextInt()) {
                 gameNumber = scanner.nextInt();
                 scanner.nextLine();
-                if (gameNumber >= 1 && gameNumber <= ListedGames.size()) {
+                if (gameNumber >= 1 && gameNumber <= listedGames.size()) {
                     break;
                 } else {
                     System.out.println("Invalid game number. Try again.");
@@ -125,11 +125,11 @@ public class PostloginUI {
             System.out.print("Enter the number of the game to join: ");
         }
 
-        if(gameNumber < 1 || gameNumber > ListedGames.size()) {
+        if(gameNumber < 1 || gameNumber > listedGames.size()) {
             System.out.println("Invalid game number. Try again.");
             return;
         }
-        Map<String, Object> selectedGame = ListedGames.get(gameNumber-1);
+        Map<String, Object> selectedGame = listedGames.get(gameNumber-1);
 
         int gameID = ((Double) selectedGame.get("gameID")).intValue();
 
@@ -159,7 +159,7 @@ public class PostloginUI {
     }
 
     public void handleObserveGame() {
-        if (ListedGames == null || ListedGames.isEmpty()) {
+        if (listedGames == null || listedGames.isEmpty()) {
             System.out.println("No available games. Please list games first.");
             return;
         }
@@ -167,12 +167,12 @@ public class PostloginUI {
         System.out.print("Enter the game ID to observe: ");
         int gameNumber = scanner.nextInt();
         scanner.nextLine();
-        if(gameNumber < 1 || gameNumber > ListedGames.size()) {
+        if(gameNumber < 1 || gameNumber > listedGames.size()) {
             System.out.println("Invalid game number. Try again.");
             return;
         }
 
-        Map<String, Object> selectedGame = ListedGames.get(gameNumber-1);
+        Map<String, Object> selectedGame = listedGames.get(gameNumber-1);
 
         int gameID = ((Double) selectedGame.get("gameID")).intValue();
         Map<String, Object> response = serverFacade.observeGame(String.valueOf(gameID));
