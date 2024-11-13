@@ -61,14 +61,14 @@ public class ServiceGame {
         }
         String whiteUser = gameData.whiteUsername();
         String blackUser = gameData.blackUsername();
-        if (Objects.equals(color, "white")) {
+        if (color.equalsIgnoreCase( "white")) {
             if (whiteUser != null){
                 return 2;
             }
             else{
                 whiteUser = authData.username();
             }
-        } else if (Objects.equals(color, "black")) {
+        } else if (color.equalsIgnoreCase("black")) {
             if (blackUser != null){
                 return 2;
             }

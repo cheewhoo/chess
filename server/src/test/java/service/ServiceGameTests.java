@@ -71,7 +71,7 @@ public class ServiceGameTests{
         int gameID = servicegame.makeGame(authToken, "gamename");
         servicegame.joinGame(authToken, gameID, "WHITE");
 
-        DataGame expectedGame = new DataGame(gameID, null, null, "gamename", null);
+        DataGame expectedGame = new DataGame(gameID, "Username", null, "gamename", null);
         DataGame actualGame = memgame.getGame(gameID);
         Assertions.assertEquals(expectedGame, actualGame);
     }
