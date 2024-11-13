@@ -12,6 +12,7 @@ public class PostloginUI {
     private List<Map<String, Object>> listedGames;
     private ChessBoard chessBoard;
     private ChessBoardRenderer chessBoardRenderer;
+    private String authToken;
 
     public PostloginUI(ServerFacade serverFacade, Scanner scanner) {
         this.serverFacade = serverFacade;
@@ -20,7 +21,7 @@ public class PostloginUI {
         this.chessBoardRenderer = new ChessBoardRenderer();
     }
 
-    public boolean showMenu() {
+    public String showMenu(String authToken) {
         System.out.println("\n-- Postlogin Menu --");
         System.out.println("1. Help");
         System.out.println("2. Logout");
@@ -28,22 +29,22 @@ public class PostloginUI {
         System.out.println("4. List Games");
         System.out.println("5. Play Game");
         System.out.println("6. Observe Game");
-
+        this.authToken = authToken;
         int choice = getUserChoice();
 
         switch (choice) {
             case 1 -> displayHelp();
             case 2 -> {
-                handleLogout();
-                return false;
+                handleLogout(authToken);
+                return "no value";
             }
-            case 3 -> handleCreateGame();
+            case 3 -> handleCreateGame(authToken);
             case 4 -> handleListGames();
-            case 5 -> handlePlayGame();
-            case 6 -> handleObserveGame();
+            case 5 -> handlePlayGame(authToken);
+            case 6 -> handleObserveGame(authToken);
             default -> System.out.println("Invalid choice. Try again.");
         }
-        return true;
+        return authToken;
     }
 
     private int getUserChoice() {
@@ -74,23 +75,23 @@ public class PostloginUI {
         System.out.println(" - Play Game: Join a chess game.");
     }
 
-    private void handleLogout() {
+    private void handleLogout(String authToken) {
         System.out.println("Logging out...");
-        serverFacade.logout();
+        serverFacade.logout(authToken);
         System.out.println("Successfully logged out.");
         PreloginUI preloginUI = new PreloginUI(serverFacade, scanner);
-        boolean loggedIn = preloginUI.showMenu();
+        String loggedIn = preloginUI.showMenu();
 
-        if (loggedIn) {
-            showMenu();
+        if (loggedIn.equals("no value")) {
+            showMenu(authToken);
         }
     }
 
-    private void handleCreateGame() {
+    private void handleCreateGame(String authToken) {
         System.out.print("Enter game name: ");
         String gameName = scanner.nextLine();
 
-        Map<String, Object> response = serverFacade.createGame(gameName);
+        Map<String, Object> response = serverFacade.createGame(gameName, authToken);
         if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Game created successfully: " + gameName);
             chessBoard.resetBoard();
@@ -100,7 +101,7 @@ public class PostloginUI {
     }
 
     private void handleListGames() {
-        Map<String, Object> response = serverFacade.listGames();
+        Map<String, Object> response = serverFacade.listGames(authToken);
         if (response.containsKey("games")) {
             listedGames = (List<Map<String, Object>>) response.get("games");
             if (listedGames != null && !listedGames.isEmpty()) {
@@ -122,7 +123,7 @@ public class PostloginUI {
         }
     }
 
-    public void handlePlayGame() {
+    public void handlePlayGame(String authToken) {
         if (listedGames == null || listedGames.isEmpty()) {
             System.out.println("No available games. Please list games first.");
             return;
@@ -162,7 +163,7 @@ public class PostloginUI {
             playerColor = scanner.nextLine().trim().toLowerCase();
         }
 
-        Map<String, Object> response = serverFacade.joinGame(String.valueOf(gameID), playerColor);
+        Map<String, Object> response = serverFacade.joinGame(String.valueOf(gameID), playerColor, authToken);
         if (response.containsKey("success") && (boolean) response.get("success")) {
             System.out.println("Successfully joined game with ID " + gameID + " as " + playerColor + ".");
             chessBoard.resetBoard();
@@ -178,7 +179,7 @@ public class PostloginUI {
         chessBoardRenderer.drawBoard(board, whiteAtBottom);
     }
 
-    public void handleObserveGame() {
+    public void handleObserveGame(String authToken) {
         if (listedGames == null || listedGames.isEmpty()) {
             System.out.println("No available games. Please list games first.");
             return;
@@ -195,7 +196,7 @@ public class PostloginUI {
         Map<String, Object> selectedGame = listedGames.get(gameNumber-1);
 
         int gameID = ((Double) selectedGame.get("gameID")).intValue();
-        Map<String, Object> response = serverFacade.observeGame(String.valueOf(gameID));
+        Map<String, Object> response = serverFacade.observeGame(String.valueOf(gameID), authToken);
         if (response.containsKey("error")) {
             System.out.println("Failed to observe game: " + response.get("error"));
         } else {

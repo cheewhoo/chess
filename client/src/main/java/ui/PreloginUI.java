@@ -13,7 +13,7 @@ public class PreloginUI {
         this.scanner = scanner;
     }
 
-    public boolean showMenu() {
+    public String showMenu() {
         System.out.println("\n-- Prelogin Menu --");
         System.out.println("1. Help");
         System.out.println("2. Register");
@@ -31,7 +31,7 @@ public class PreloginUI {
             case 4 -> quit();
             default -> System.out.println("Invalid choice. Try again.");
         }
-        return false;
+        return "no value";
     }
 
     private int getUserChoice() {
@@ -61,7 +61,7 @@ public class PreloginUI {
         System.out.println(" - Quit: Exit the program.");
     }
 
-    private boolean handleRegister() {
+    private String handleRegister() {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
         System.out.print("Enter password: ");
@@ -70,28 +70,28 @@ public class PreloginUI {
         String email = scanner.nextLine();
 
         Map<String, Object> response = serverFacade.register(username, password, email);
-        if (response.containsKey("success") && (boolean) response.get("success")) {
+        if (response.containsKey("success") && (boolean) response.get("success") && response.containsKey("authToken")) {
             System.out.println("Registration successful. Please login.");
-            return true;
+            return (String)response.getOrDefault("authToken", "no value");
         } else {
             System.out.println("Registration failed: " + response.get("error"));
-            return false;
+            return "no value";
         }
     }
 
-    private boolean handleLogin() {
+    private String handleLogin() {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
         Map<String, Object> response = serverFacade.login(username, password);
-        if (response.containsKey("success") && (boolean) response.get("success")) {
+        if (response.containsKey("success") && (boolean) response.get("success") && response.containsKey("authToken")) {
             System.out.println("Login successful. Welcome, " + username + "!");
-            return true;
+            return (String)response.getOrDefault("authToken", "no value");
         } else {
             System.out.println("Login failed: " + response.get("error"));
-            return false;
+            return "no value";
         }
     }
 

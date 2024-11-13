@@ -8,14 +8,14 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("♕ 240 Chess Client");
 
-        boolean isLoggedIn = false;
+        String isLoggedIn = "no value";
         PreloginUI preloginUI = new PreloginUI(serverFacade, scanner);
         PostloginUI postloginUI = new PostloginUI(serverFacade, scanner);
         while (true) {
-            if (!isLoggedIn) {
+            if (isLoggedIn.equals("no value")) {
                 isLoggedIn = preloginUI.showMenu();
             } else {
-                isLoggedIn = postloginUI.showMenu();
+                isLoggedIn = postloginUI.showMenu(isLoggedIn);
             }
         }
     }

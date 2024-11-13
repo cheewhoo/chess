@@ -18,19 +18,19 @@ public class ServerFacade {
     }
 
     public Map<String, Object> register(String username, String password, String email) {
-        Map<String, Object> response = sendRequest("POST", "/user", Map.of("username", username, "password", password, "email", email));
+        Map<String, Object> response = sendRequest("POST", "/user", Map.of("username", username, "password", password, "email", email), authToken);
         if (response.containsKey("Error")) {
             return Map.of("error", response.get("Error"));
         }
-        return Map.of("success", true);
+        return Map.of("success", true, "authToken", response.get("authToken"));
     }
 
 
     public Map<String, Object> login(String username, String password) {
-        Map<String, Object> response = sendRequest("POST", "/session", Map.of("username", username, "password", password));
+        Map<String, Object> response = sendRequest("POST", "/session", Map.of("username", username, "password", password), authToken);
         if (response.containsKey("authToken")) {
             setAuthToken((String) response.get("authToken"));
-            return Map.of("success", true);
+            return Map.of("success", true, "authToken", response.get("authToken"));
         }
         if (response.containsKey("Error")) {
             return Map.of("error", response.get("Error"));
@@ -40,12 +40,12 @@ public class ServerFacade {
 
 
 
-    public Map<String, Object> logout() {
-        return sendRequest("DELETE", "/session", null);
+    public Map<String, Object> logout(String authToken) {
+        return sendRequest("DELETE", "/session", null, authToken);
     }
 
-    public Map<String, Object> createGame(String gameName) {
-        Map<String, Object> response = sendRequest("POST", "/game", Map.of("gameName", gameName));
+    public Map<String, Object> createGame(String gameName, String authToken) {
+        Map<String, Object> response = sendRequest("POST", "/game", Map.of("gameName", gameName), authToken);
 
         if (response.containsKey("success") && (boolean) response.get("success")) {
             return Map.of("success", true);
@@ -55,14 +55,13 @@ public class ServerFacade {
     }
 
 
-    public Map<String, Object> listGames() {
-        Map<String, Object> response = sendRequest("GET", "/game", null);
-        System.out.println("Response from listGames: " + response);
+    public Map<String, Object> listGames(String authToken) {
+        Map<String, Object> response = sendRequest("GET", "/game", null, authToken);
         return response;
     }
 
 
-    private Map<String, Object> sendRequest(String method, String endpoint, Map<String, String> body) {
+    private Map<String, Object> sendRequest(String method, String endpoint, Map<String, String> body, String authToken) {
         Map<String, Object> responseMap;
         try {
             URI uri = new URI(baseURL + endpoint);
@@ -99,12 +98,12 @@ public class ServerFacade {
         return responseMap;
     }
 
-    public Map<String, Object> joinGame(String gameID, String playerColor) {
+    public Map<String, Object> joinGame(String gameID, String playerColor, String authToken) {
         if (playerColor == null || (!playerColor.equalsIgnoreCase("white") && !playerColor.equalsIgnoreCase("black"))) {
             return Map.of("error", "Invalid color. Choose 'white' or 'black'.");
         }
         Map<String, String> requestBody = Map.of("gameID", gameID, "playerColor", playerColor.toLowerCase());
-        Map<String, Object> response = sendRequest("PUT", "/game", requestBody);
+        Map<String, Object> response = sendRequest("PUT", "/game", requestBody, authToken);
         if (response.containsKey("error")) {
             return Map.of("error", "Server error: " + response.get("error"));
         }
@@ -118,9 +117,9 @@ public class ServerFacade {
         return response;
     }
 
-    public Map<String, Object> observeGame(String gameID) {
+    public Map<String, Object> observeGame(String gameID, String authToken) {
         Map<String, String> requestBody = Map.of("gameID", gameID);
-        Map<String, Object> response = sendRequest("GET", "/game/observe", requestBody);
+        Map<String, Object> response = sendRequest("GET", "/game/observe", requestBody, authToken);
         if (response.containsKey("error")) {
             return Map.of("error", "Error observing game: " + response.get("error"));
         }
