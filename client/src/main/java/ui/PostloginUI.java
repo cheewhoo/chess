@@ -35,7 +35,8 @@ public class PostloginUI {
         switch (choice) {
             case 1 -> displayHelp();
             case 2 -> {
-                return !handleLogout();
+                handleLogout();
+                return false;
             }
             case 3 -> handleCreateGame();
             case 4 -> handleListGames();
@@ -48,8 +49,23 @@ public class PostloginUI {
     }
 
     private int getUserChoice() {
-        System.out.print("Choose an option: ");
-        return Integer.parseInt(scanner.nextLine());
+        int choice;
+        while (true) {
+            System.out.print("Choose an option: ");
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice >= 1 && choice <= 7) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please select a number between 1 and 7.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
+            }
+        }
+        return choice;
     }
 
     private void displayHelp() {
@@ -61,9 +77,16 @@ public class PostloginUI {
         System.out.println(" - Quit: Exit the program.");
     }
 
-    private boolean handleLogout() {
-        Map<String, Object> response = serverFacade.logout();
-        return response.containsKey("success") && (boolean) response.get("success");
+    private void handleLogout() {
+        System.out.println("Logging out...");
+        serverFacade.logout();
+        System.out.println("Successfully logged out.");
+        PreloginUI preloginUI = new PreloginUI(serverFacade, scanner);
+        boolean loggedIn = preloginUI.showMenu();
+
+        if (loggedIn) {
+            showMenu();
+        }
     }
 
     private void handleCreateGame() {
